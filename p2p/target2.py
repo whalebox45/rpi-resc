@@ -67,7 +67,7 @@ class LoRaBeacon(LoRa):
             sys.exit(0)
         BOARD.led_off()
         sleep(args.wait)
-        rawinput = f'tx_counter: {tx_counter}'
+        rawinput = f'tx_counter: {self.tx_counter}'
         data = [int(hex(ord(c)), 0) for c in rawinput]
         self.write_payload(data)
         BOARD.led_on()
