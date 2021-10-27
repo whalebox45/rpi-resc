@@ -40,24 +40,34 @@ class LoRaRcvCont(LoRa):
     def __init__(self, verbose=False):
         super(LoRaRcvCont, self).__init__(verbose)
         self.set_mode(MODE.SLEEP)
-        self.set_dio_mapping([0,0,0,0,0,0])
+        
 
     def on_rx_done(self):
+        self.set_dio_mapping([0,0,0,0,0,0])
         BOARD.led_on()
         print("\nRxDone")
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
         data = ''.join([chr(c) for c in payload])
         print(data)
-        #print(bytes(payload).decode())
         self.set_mode(MODE.SLEEP)
         self.reset_ptr_rx()
         BOARD.led_off()
         self.set_mode(MODE.RXCONT)
 
     def on_tx_done(self):
-        print("\nTxDone")
-        print(self.get_irq_flags())
+        self.set_dio_mapping([1,0,0,0,0,0])
+        self.set_mode(MODE.STDBY)
+        self.clear_irq_flags(TxDone=1)
+        sys.stdout.flush()
+        self.tx_counter += 1
+        sys.stdout.write("\rtx #%d" % self.tx_counter)
+        BOARD.led_off()
+        test_str = 'test'
+        data = [int(hex(ord(c)), 0) for c in test_str]
+        self.write_payload(data)
+        BOARD.led_on()
+        self.set_mode(MODE.TX)
 
     def on_cad_done(self):
         print("\non_CadDone")
@@ -81,13 +91,19 @@ class LoRaRcvCont(LoRa):
 
     def start(self):
         self.reset_ptr_rx()
-        self.set_mode(MODE.RXCONT)
+        self.tx_counter = 0
         while True:
-            sleep(.5)
+            print("RX mode")
+            self.set_mode(MODE.RXCONT)
             rssi_value = self.get_rssi_value()
             status = self.get_modem_status()
             sys.stdout.flush()
             sys.stdout.write("\r%d %d %d" % (rssi_value, status['rx_ongoing'], status['modem_clear']))
+            sleep(1)
+            print("TX mode")
+            self.set_mode(MODE.TX)
+            sleep(1)
+
 
 
 lora = LoRaRcvCont(verbose=False)
