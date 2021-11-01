@@ -40,6 +40,7 @@ class LoRaRcvCont(LoRa):
     def __init__(self, verbose=False):
         super(LoRaRcvCont, self).__init__(verbose)
         self.set_mode(MODE.SLEEP)
+        self.set_dio_mapping([0,0,0,0,0,0])
         
 
     def on_rx_done(self):
