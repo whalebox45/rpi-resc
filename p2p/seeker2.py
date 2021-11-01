@@ -67,7 +67,7 @@ class LoRaRcvCont(LoRa):
         data = [int(hex(ord(c)), 0) for c in test_str]
         self.write_payload(data)
         BOARD.led_on()
-        self.set_mode(MODE.TX)
+        self.set_mode(MODE.RXCONT)
 
     def on_cad_done(self):
         print("\non_CadDone")
