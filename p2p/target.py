@@ -48,12 +48,12 @@ class LoRaBeacon(LoRa):
         self.set_dio_mapping([1,0,0,0,0,0])
 
     def on_rx_done(self):
-        print("\nRxDone")
-        print(self.get_irq_flags())
-        print(map(hex, self.read_payload(nocheck=True)))
-        self.set_mode(MODE.SLEEP)
-        self.reset_ptr_rx()
-        self.set_mode(MODE.RXCONT)
+        # print("\nRxDone")
+        # print(self.get_irq_flags())
+        # print(map(hex, self.read_payload(nocheck=True)))
+        # self.set_mode(MODE.SLEEP)
+        # self.reset_ptr_rx()
+        # self.set_mode(MODE.RXCONT)
 
     def on_tx_done(self):
         global args
