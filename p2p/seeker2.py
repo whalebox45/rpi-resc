@@ -44,7 +44,7 @@ class LoRaRcvCont(LoRa):
         
 
     def on_rx_done(self):
-        self.set_dio_mapping([0,0,0,0,0,0])
+        
         BOARD.led_on()
         print("\nRxDone")
         self.clear_irq_flags(RxDone=1)
@@ -57,7 +57,7 @@ class LoRaRcvCont(LoRa):
         self.set_mode(MODE.RXCONT)
 
     def on_tx_done(self):
-        self.set_dio_mapping([1,0,0,0,0,0])
+        
         # self.set_mode(MODE.STDBY)
         self.clear_irq_flags(TxDone=1)
         self.tx_counter += 1
@@ -93,15 +93,21 @@ class LoRaRcvCont(LoRa):
         self.reset_ptr_rx()
         self.tx_counter = 0
         while True:
-            print("\nRX mode")
+            self.set_dio_mapping([0,0,0,0,0,0])
             self.set_mode(MODE.RXCONT)
+            print("\nRX mode")
+            
+            
             rssi_value = self.get_rssi_value()
             status = self.get_modem_status()
             sys.stdout.flush()
             sys.stdout.write("\r%d %d %d" % (rssi_value, status['rx_ongoing'], status['modem_clear']))
             sleep(1)
-            print("\nTX mode")
+
+
+            self.set_dio_mapping([1,0,0,0,0,0])
             self.set_mode(MODE.TX)
+            print("\nTX mode")
             sleep(2)
 
 
