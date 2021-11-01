@@ -58,11 +58,10 @@ class LoRaRcvCont(LoRa):
 
     def on_tx_done(self):
         self.set_dio_mapping([1,0,0,0,0,0])
-        self.set_mode(MODE.STDBY)
+        # self.set_mode(MODE.STDBY)
         self.clear_irq_flags(TxDone=1)
-        sys.stdout.flush()
         self.tx_counter += 1
-        sys.stdout.write("\rtx #%d" % self.tx_counter)
+        print("tx #%d" % self.tx_counter)
         BOARD.led_off()
         test_str = 'test'
         data = [int(hex(ord(c)), 0) for c in test_str]
