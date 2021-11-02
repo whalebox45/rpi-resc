@@ -29,21 +29,27 @@ class LoRaP2P(LoRa):
         self.set_mode(MODE.RXCONT)
 
     def time_count(self):
+        time_kill = False
         while True:
             print("Time: 5s")
             sleep(5)
+            if time_kill: return
 
     def start(self):
         BOARD.led_off()
         tc = threading.Thread(target=self.time_count)
         
         tc.start()
-        while True:
+        try:
+            while True:
             
 
-            self.reset_ptr_rx()
-            self.set_mode(MODE.RXCONT)
-            sleep(.5)
+                self.reset_ptr_rx()
+                self.set_mode(MODE.RXCONT)
+                sleep(.5)
+
+        finally:
+            time_kill = True
     
 lora = LoRaP2P(verbose=False)
 
