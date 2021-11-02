@@ -64,7 +64,7 @@ assert(lora.get_agc_auto_on() == 1)
 try:
     lora.start()
 except KeyboardInterrupt as e:
-    sys.stderr.write(e)
+    sys.stderr.write(str(e))
 finally:
     lora.set_mode(MODE.SLEEP)
     BOARD.teardown()
