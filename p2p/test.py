@@ -53,7 +53,7 @@ lora.set_pa_config(pa_select=1)
 
 
 print(lora)
-assert(lora.set_agc_auto_on() == 1)
+assert(lora.get_agc_auto_on() == 1)
 
 try:
     lora.start()
