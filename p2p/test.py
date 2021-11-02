@@ -2,7 +2,7 @@ import sys
 from time import sleep, time
 import threading
 
-
+sys.path.insert(0, '..')
 from SX127x.LoRa import *
 from SX127x.LoRaArgumentParser import LoRaArgumentParser
 from SX127x.board_config import BOARD
