@@ -45,3 +45,18 @@ class LoRaP2P(LoRa):
             self.set_mode(MODE.RXCONT)
             sleep(.5)
     
+lora = LoRaP2P(verbose=False)
+
+lora.set_mode(MODE.STDBY)
+lora.set_pa_config(pa_select=1)
+
+
+
+print(lora)
+assert(lora.set_agc_auto_on() == 1)
+
+try:
+    lora.start()
+finally:
+    lora.set_mode(MODE.SLEEP)
+    BOARD.teardown()
