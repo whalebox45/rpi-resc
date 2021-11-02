@@ -40,16 +40,16 @@ class LoRaP2P(LoRa):
         tc = threading.Thread(target=self.time_count)
         
         tc.start()
-        try:
-            while True:
-            
+        while True:
 
-                self.reset_ptr_rx()
-                self.set_mode(MODE.RXCONT)
-                sleep(.5)
+            self.reset_ptr_rx()
+            self.set_mode(MODE.RXCONT)
+            sleep(.5)
+            rssi_value = self.get_rssi_value()
+            status = self.get_modem_status()
+            sys.stdout.flush()
+            sys.stdout.write("\r%d %d %d" % (rssi_value, status['rx_ongoing'], status['modem_clear']))
 
-        finally:
-            time_kill = True
     
 lora = LoRaP2P(verbose=False)
 
