@@ -85,7 +85,6 @@ try:
     lora.start()
 except (KeyboardInterrupt, SystemExit):
     sys.stdout.flush()
-    sys.stderr.write(str(ki))
 finally:
     tc.kill()
     sys.stdout.flush()
