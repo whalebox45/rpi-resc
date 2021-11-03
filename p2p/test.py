@@ -25,7 +25,7 @@ class LoRaP2P(LoRa):
         payload = self.read_payload(nocheck=True)
         data = ''.join([chr(c) for c in payload])
         print()
-        print(payload)
+        print(data)
         
         
         self.set_mode(MODE.SLEEP)
