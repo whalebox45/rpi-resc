@@ -28,45 +28,67 @@ class LoRaP2P(LoRa):
         BOARD.led_off()
         self.set_mode(MODE.RXCONT)
 
-    def time_count(self):
-        time_kill = False
-        while True:
-            print("Time: 5s")
-            sleep(5)
-            if time_kill: return
-
     def start(self):
         BOARD.led_off()
-        try:
-            tc = threading.Thread(target=self.time_count)
-        
-            tc.start()
-            while True:
 
-                self.reset_ptr_rx()
-                self.set_mode(MODE.RXCONT)
-                sleep(.5)
-                rssi_value = self.get_rssi_value()
-                status = self.get_modem_status()
-                sys.stdout.flush()
-                sys.stdout.write("\r%d %d %d" % (rssi_value, status['rx_ongoing'], status['modem_clear']))
-        finally:
-            time_kill = True
+        while True:
+
+            self.reset_ptr_rx()
+            self.set_mode(MODE.RXCONT)
+            sleep(.5)
+            rssi_value = self.get_rssi_value()
+            status = self.get_modem_status()
+            sys.stdout.flush()
+            sys.stdout.write("\r%d %d %d" % (rssi_value, status['rx_ongoing'], status['modem_clear']))
     
+
+
+
+class TimeCount(threading.Thread):
+    time_kill = False
+    
+    def __init__(self):
+        threading.Thread.__init__(self)
+    
+    def kill(self):
+        self.time_kill = True
+
+    def run(self):
+        while True:
+            if self.time_kill: return
+            print("Time: 5s")
+            sleep(5)
+            
+
+
+
+
+
+
+
+
 lora = LoRaP2P(verbose=False)
 
 lora.set_mode(MODE.STDBY)
 lora.set_pa_config(pa_select=1)
 
-
-
 print(lora)
 assert(lora.get_agc_auto_on() == 1)
 
+tc = TimeCount()
+
+
+
+
 try:
+    tc.start()
     lora.start()
-except KeyboardInterrupt as e:
-    sys.stderr.write(str(e))
+except KeyboardInterrupt as ki:
+    sys.stdout.flush()
+    sys.stderr.write(str(ki))
 finally:
+    tc.kill()
+    sys.stdout.flush()
     lora.set_mode(MODE.SLEEP)
     BOARD.teardown()
+
