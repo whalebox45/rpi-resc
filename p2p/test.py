@@ -7,7 +7,6 @@ from SX127x.LoRa import *
 from SX127x.LoRaArgumentParser import LoRaArgumentParser
 from SX127x.board_config import BOARD
 
-BOARD.setup()
 
 class LoRaP2P(LoRa):
 
@@ -21,8 +20,14 @@ class LoRaP2P(LoRa):
         BOARD.led_on()
         print("\nRXDone")
         self.clear_irq_flags(RxDone=1)
+        
+        
         payload = self.read_payload(nocheck=True)
+        data = ''.join([chr(c) for c in payload])
+        print()
         print(payload)
+        
+        
         self.set_mode(MODE.SLEEP)
         self.reset_ptr_rx()
         BOARD.led_off()
@@ -30,11 +35,10 @@ class LoRaP2P(LoRa):
 
     def start(self):
         BOARD.led_off()
-
+        self.reset_ptr_rx()
+        self.set_mode(MODE.RXCONT)
         while True:
 
-            self.reset_ptr_rx()
-            self.set_mode(MODE.RXCONT)
             sleep(.5)
             rssi_value = self.get_rssi_value()
             status = self.get_modem_status()
@@ -64,10 +68,12 @@ class TimeCount(threading.Thread):
 
 
 
+BOARD.setup()
 
-
+parser = LoRaArgumentParser("lora p2p test")
 
 lora = LoRaP2P(verbose=False)
+args = parser.parse_args(lora)
 
 lora.set_mode(MODE.STDBY)
 lora.set_pa_config(pa_select=1)
