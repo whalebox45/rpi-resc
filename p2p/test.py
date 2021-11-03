@@ -60,6 +60,7 @@ class TimeCount(threading.Thread):
     def run(self):
         while True:
             if self.time_kill: return
+            print()
             print("Time: 5s")
             sleep(5)
             
