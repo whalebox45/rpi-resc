@@ -83,7 +83,7 @@ tc = TimeCount()
 try:
     tc.start()
     lora.start()
-except KeyboardInterrupt as ki:
+except (KeyboardInterrupt, SystemExit):
     sys.stdout.flush()
     sys.stderr.write(str(ki))
 finally:
