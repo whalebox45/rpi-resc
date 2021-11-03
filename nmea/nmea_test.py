@@ -1,10 +1,10 @@
-from pyserial import Serial
+from serial import Serial
 import time
 import pynmea2
 
 while True:
     port="/dev/ttyAMA0"
-    ser=pyserial.Serial(port, baudrate=9600, timeout=0.5)
+    ser= Serial(port, baudrate=9600, timeout=0.5)
     dataout = pynmea2.NMEAStreamReader()
     newdata = ser.readline()
 
