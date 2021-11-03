@@ -8,6 +8,7 @@ while True:
     dataout = pynmea2.NMEAStreamReader()
     newdata = ser.readline()
     if newdata[0:6] == "$GPRMC":
+        print(newdata)
         newmsg = pynmea2.parse(newdata)
         lat = newmsg.latitude
         lng = newmsg.longitude
