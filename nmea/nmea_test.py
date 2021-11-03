@@ -1,4 +1,4 @@
-from serial import serial
+from serial import Serial
 import time
 import pynmea2
 
