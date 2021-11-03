@@ -1,4 +1,4 @@
-import serial
+from serial import serial
 import time
 import pynmea2
 
@@ -8,6 +8,7 @@ while True:
     dataout = pynmea2.NMEAStreamReader()
     newdata = ser.readline()
 
+    print()
     if newdata[0:6] == "$GPRMC":
         newmsg = pynmea2.parse(newdata)
         lat = newmsg.latitude
