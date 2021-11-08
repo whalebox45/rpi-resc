@@ -51,26 +51,6 @@ class LoRaBeacon(LoRa):
         BOARD.led_on()
         self.set_mode(MODE.TX)
 
-    def on_cad_done(self):
-        print("\non_CadDone")
-        print(self.get_irq_flags())
-
-    def on_rx_timeout(self):
-        print("\non_RxTimeout")
-        print(self.get_irq_flags())
-
-    def on_valid_header(self):
-        print("\non_ValidHeader")
-        print(self.get_irq_flags())
-
-    def on_payload_crc_error(self):
-        print("\non_PayloadCrcError")
-        print(self.get_irq_flags())
-
-    def on_fhss_change_channel(self):
-        print("\non_FhssChangeChannel")
-        print(self.get_irq_flags())
-
     def start(self):
         global args
         sys.stdout.write("\rstart")
