@@ -25,7 +25,8 @@
 # python p2p_recv.py -f 433 -b BW125 -s 12
 
 import sys 
-from time import sleep
+from time import sleep,time
+from datetime import timedelta
 sys.path.insert(0, '../')        
 from SX127x.LoRa import *
 from SX127x.LoRaArgumentParser import LoRaArgumentParser
@@ -94,16 +95,19 @@ class LoRaRcvCont(LoRa):
         self.reset_ptr_rx()
         self.tx_counter = 0
         while True:
-            self.set_dio_mapping([0,0,0,0,0,0])
-            self.set_mode(MODE.RXCONT)
-            print("\nRX mode")
-            
-            
-            rssi_value = self.get_rssi_value()
-            status = self.get_modem_status()
-            sys.stdout.flush()
-            sys.stdout.write("\r%d %d %d" % (rssi_value, status['rx_ongoing'], status['modem_clear']))
-            sleep(3)
+
+            t_start = time.time()
+            t_end = time.time()
+            while t_end - t_start < 3:
+                self.set_dio_mapping([0,0,0,0,0,0])
+                self.set_mode(MODE.RXCONT)
+                print("\nRX mode")
+                rssi_value = self.get_rssi_value()
+                status = self.get_modem_status()
+                sys.stdout.flush()
+                sys.stdout.write("\r%d %d %d" % (rssi_value, status['rx_ongoing'], status['modem_clear']))
+                sleep(0.5)
+                t_end = time.time()
 
 
             self.set_dio_mapping([1,0,0,0,0,0])
