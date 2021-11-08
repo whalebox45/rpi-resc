@@ -140,9 +140,6 @@ lora.set_pa_config(pa_select=1)
 print(lora)
 assert(lora.get_agc_auto_on() == 1)
 
-try: input("Press enter to start...")
-except: pass
-
 try:
     lora.start()
 except KeyboardInterrupt:
