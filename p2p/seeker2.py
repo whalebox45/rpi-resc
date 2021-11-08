@@ -67,7 +67,7 @@ class LoRaRcvCont(LoRa):
         print("tx #%d" % self.tx_counter)
         BOARD.led_off()
         sleep(1)
-        test_str = f'transmitted from {socket_hostname}'
+        test_str = f'transmitted from {socket_hostname()}'
         data = [int(hex(ord(c)), 0) for c in test_str]
         self.write_payload(data)
         BOARD.led_on()
