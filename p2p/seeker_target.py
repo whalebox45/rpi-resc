@@ -41,15 +41,13 @@ class LoRaBeacon(LoRa):
 def main():
     BOARD.setup()
     
-
-    assert(lora_t.get_agc_auto_on() == 1)
-
     try:
         while True:
             parser_t = LoRaArgumentParser("lora beacon")
             lora_t = LoRaBeacon(verbose=False)
             args_t = parser_t.parse_args(lora_t)
             lora_t.set_pa_config(pa_select=1)
+            assert(lora_t.get_agc_auto_on() == 1)
             lora_t.start()
             lora_t.set_mode(MODE.SLEEP)
     except KeyboardInterrupt:
