@@ -59,8 +59,8 @@ def main():
     finally:
         sys.stdout.flush()
         print("")
-        lora.set_mode(MODE.SLEEP)
-        print(lora)
+        lora_t.set_mode(MODE.SLEEP)
+        print(lora_t)
         BOARD.teardown()
 
 main()
