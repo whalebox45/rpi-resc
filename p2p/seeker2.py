@@ -97,6 +97,7 @@ class LoRaRcvCont(LoRa):
         
         self.tx_counter = 0
         while True:
+            sleep(0.5)
             self.reset_ptr_rx()
             self.set_dio_mapping([0,0,0,0,0,0])
             self.set_mode(MODE.RXCONT)
@@ -113,6 +114,7 @@ class LoRaRcvCont(LoRa):
                 sleep(0.5)
                 t_end = time.time()
 
+            sleep(0.5)
             self.reset_ptr_rx()
             self.set_mode(MODE.STDBY)
 
