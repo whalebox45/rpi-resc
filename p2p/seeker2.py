@@ -63,6 +63,7 @@ class LoRaRcvCont(LoRa):
         self.tx_counter += 1
         print("tx #%d" % self.tx_counter)
         BOARD.led_off()
+        sleep(1)
         test_str = 'test'
         data = [int(hex(ord(c)), 0) for c in test_str]
         self.write_payload(data)
@@ -108,7 +109,6 @@ class LoRaRcvCont(LoRa):
             self.set_dio_mapping([1,0,0,0,0,0])
             self.set_mode(MODE.TX)
             print("\nTX mode")
-            
             sleep(4)
 
 
