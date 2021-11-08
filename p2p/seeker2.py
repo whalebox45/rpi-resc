@@ -28,6 +28,7 @@ import sys
 from time import sleep
 import time
 from datetime import timedelta
+from socket import gethostname as socket_hostname
 sys.path.insert(0, '../')        
 from SX127x.LoRa import *
 from SX127x.LoRaArgumentParser import LoRaArgumentParser
@@ -66,7 +67,7 @@ class LoRaRcvCont(LoRa):
         print("tx #%d" % self.tx_counter)
         BOARD.led_off()
         sleep(1)
-        test_str = 'test'
+        test_str = f'transmitted from {socket_hostname}'
         data = [int(hex(ord(c)), 0) for c in test_str]
         self.write_payload(data)
         BOARD.led_on()
@@ -104,7 +105,6 @@ class LoRaRcvCont(LoRa):
             t_end = time.time()
 
             while t_end - t_start < 3:
-                print("test")
                 rssi_value = self.get_rssi_value()
                 status = self.get_modem_status()
                 sys.stdout.flush()
