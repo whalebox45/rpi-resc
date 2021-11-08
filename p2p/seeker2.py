@@ -102,14 +102,14 @@ class LoRaRcvCont(LoRa):
             status = self.get_modem_status()
             sys.stdout.flush()
             sys.stdout.write("\r%d %d %d" % (rssi_value, status['rx_ongoing'], status['modem_clear']))
-            sleep(1)
+            sleep(3)
 
 
             self.set_dio_mapping([1,0,0,0,0,0])
             self.set_mode(MODE.TX)
             print("\nTX mode")
             while True:
-                sleep(2)
+                sleep(4)
 
 
 
