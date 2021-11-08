@@ -108,8 +108,8 @@ class LoRaRcvCont(LoRa):
             self.set_dio_mapping([1,0,0,0,0,0])
             self.set_mode(MODE.TX)
             print("\nTX mode")
-            while True:
-                sleep(4)
+            
+            sleep(4)
 
 
 
