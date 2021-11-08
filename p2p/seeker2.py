@@ -25,7 +25,8 @@
 # python p2p_recv.py -f 433 -b BW125 -s 12
 
 import sys 
-from time import sleep,time
+from time import sleep
+import time
 from datetime import timedelta
 sys.path.insert(0, '../')        
 from SX127x.LoRa import *
