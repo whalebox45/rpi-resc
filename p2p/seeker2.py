@@ -54,7 +54,7 @@ class LoRaRcvCont(LoRa):
         payload = self.read_payload(nocheck=True)
         data = ''.join([chr(c) for c in payload])
         print(data)
-        self.set_mode(MODE.SLEEP)
+        self.set_mode(MODE.STDBY)
         self.reset_ptr_rx()
         BOARD.led_off()
         self.set_mode(MODE.RXCONT)
@@ -113,6 +113,7 @@ class LoRaRcvCont(LoRa):
                 sleep(0.5)
                 t_end = time.time()
 
+            self.reset_ptr_rx()
             self.set_mode(MODE.STDBY)
 
             self.set_dio_mapping([1,0,0,0,0,0])
