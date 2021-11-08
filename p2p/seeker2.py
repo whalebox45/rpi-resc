@@ -66,7 +66,7 @@ class LoRaRcvCont(LoRa):
         print("tx #%d" % self.tx_counter)
         BOARD.led_off()
         sleep(1)
-        test_str = 'test'
+        test_str = 'transmit ok'
         data = [int(hex(ord(c)), 0) for c in test_str]
         self.write_payload(data)
         BOARD.led_on()
@@ -104,7 +104,6 @@ class LoRaRcvCont(LoRa):
             t_end = time.time()
 
             while t_end - t_start < 3:
-                print("test")
                 rssi_value = self.get_rssi_value()
                 status = self.get_modem_status()
                 sys.stdout.flush()
