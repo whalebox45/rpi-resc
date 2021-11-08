@@ -61,7 +61,7 @@ class LoRaRcvCont(LoRa):
 
     def on_tx_done(self):
         
-        # self.set_mode(MODE.STDBY)
+        self.set_mode(MODE.STDBY)
         self.clear_irq_flags(TxDone=1)
         self.tx_counter += 1
         print("tx #%d" % self.tx_counter)
@@ -113,7 +113,7 @@ class LoRaRcvCont(LoRa):
                 sleep(0.5)
                 t_end = time.time()
 
-            self.set_mode(MODE.SLEEP)
+            self.set_mode(MODE.STDBY)
 
             self.set_dio_mapping([1,0,0,0,0,0])
             self.set_mode(MODE.TX)
