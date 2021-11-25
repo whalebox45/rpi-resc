@@ -68,7 +68,7 @@ class LoRaRcvCont(LoRa):
         # print(test_str)
 
         data = [x for x in w1000]
-        transmit_log.write(data)
+        transmit_log.write(w1000)
 
         self.write_payload(data)
         BOARD.led_on()
