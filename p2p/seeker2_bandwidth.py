@@ -16,7 +16,7 @@ BOARD.setup()
 parser = LoRaArgumentParser("Continous LoRa receiver.")
 
 try:
-    w1000_file = open('W1000.txt','r')
+    w1000_file = open('W1000.txt','rb')
     w1000 = w1000_file.read()
 except FileNotFoundError as fe:
     w1000 = str(fe)
