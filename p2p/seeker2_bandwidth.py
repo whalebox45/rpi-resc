@@ -15,6 +15,10 @@ BOARD.setup()
 
 parser = LoRaArgumentParser("Continous LoRa receiver.")
 
+try:
+    w1000 = open('W1000.txt','r').read()
+except FileNotFoundError as fe:
+    w1000 = str(fe)
 
 class LoRaRcvCont(LoRa):
     def __init__(self, verbose=False):
@@ -43,9 +47,14 @@ class LoRaRcvCont(LoRa):
         # self.tx_counter += 1
         # print("tx #%d" % self.tx_counter)
         BOARD.led_off()
-        sleep(0.5)
-        test_str = f'transmitted from {socket_hostname()}'
-        print(test_str)
+        sleep(1)
+        # test_str = f'transmitted from {socket_hostname()}'
+        # print(test_str)
+
+        test_str = w1000.decode('utf-8')
+        print(len(test_str))
+
+
         data = [int(hex(ord(c)), 0) for c in test_str]
         self.write_payload(data)
         BOARD.led_on()
