@@ -137,3 +137,5 @@ finally:
     lora.set_mode(MODE.SLEEP)
     print(lora)
     BOARD.teardown()
+    w1000_file.close()
+    transmit_log.close()
