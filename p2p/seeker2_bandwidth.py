@@ -45,10 +45,10 @@ class LoRaRcvCont(LoRa):
         
         self.set_mode(MODE.STDBY)
         self.clear_irq_flags(TxDone=1)
-        # self.tx_counter += 1
-        # print("tx #%d" % self.tx_counter)
+        self.tx_counter += 1
+        print("tx #%d" % self.tx_counter)
         BOARD.led_off()
-        sleep(1)
+        sleep(4)
         # test_str = f'transmitted from {socket_hostname()}'
         # print(test_str)
         # data = [int(hex(ord(c)), 0) for c in test_str]
