@@ -22,7 +22,7 @@ except FileNotFoundError as fe:
     w1000 = str(fe)
 
 try:
-    transmit_log = open('tx_log.txt','w')
+    transmit_log = open('tx_log.txt','w+')
 except Exception as e:
     print(e)
     exit(1)
