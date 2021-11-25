@@ -21,6 +21,12 @@ try:
 except FileNotFoundError as fe:
     w1000 = str(fe)
 
+try:
+    transmit_log = open('tx_log.txt','a')
+except Exception as e:
+    print(e)
+    exit(1)
+
 class LoRaRcvCont(LoRa):
     def __init__(self, verbose=False):
         super(LoRaRcvCont, self).__init__(verbose)
@@ -45,19 +51,24 @@ class LoRaRcvCont(LoRa):
         
         self.set_mode(MODE.STDBY)
         self.clear_irq_flags(TxDone=1)
+        
         self.tx_counter += 1
-        print("tx #%d" % self.tx_counter)
+        # print("tx #%d" % self.tx_counter)
+        transmit_log.write("tx #%d" % self.tx_counter)
+        
         BOARD.led_off()
         sleep(4)
+        
         # test_str = f'transmitted from {socket_hostname()}'
         # print(test_str)
         # data = [int(hex(ord(c)), 0) for c in test_str]
         
 
         test_str = w1000.decode()
-        print(test_str)
+        # print(test_str)
 
-        data = [0]
+        data = [x for x in w1000]
+        transmit_log.write(data)
 
         self.write_payload(data)
         BOARD.led_on()
