@@ -53,7 +53,7 @@ class LoRaRcvCont(LoRa):
         self.clear_irq_flags(TxDone=1)
         
         self.tx_counter += 1
-        # print("tx #%d" % self.tx_counter)
+        print("tx #%d" % self.tx_counter)
         transmit_log.write("tx #%d\n" % self.tx_counter)
         
         BOARD.led_off()
