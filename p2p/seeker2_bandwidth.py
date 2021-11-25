@@ -51,12 +51,14 @@ class LoRaRcvCont(LoRa):
         sleep(1)
         # test_str = f'transmitted from {socket_hostname()}'
         # print(test_str)
+        # data = [int(hex(ord(c)), 0) for c in test_str]
+        
 
-        test_str = w1000.decode('utf-8')
-        print(len(test_str))
+        test_str = w1000.decode()
+        print(test_str)
 
+        data = [0]
 
-        data = [int(hex(ord(c)), 0) for c in test_str]
         self.write_payload(data)
         BOARD.led_on()
         self.set_mode(MODE.TX)
