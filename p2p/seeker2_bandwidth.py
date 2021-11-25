@@ -22,7 +22,7 @@ except FileNotFoundError as fe:
     w1000 = str(fe)
 
 try:
-    transmit_log = open('tx_log.txt','a')
+    transmit_log = open('tx_log.txt','w')
 except Exception as e:
     print(e)
     exit(1)
@@ -54,7 +54,7 @@ class LoRaRcvCont(LoRa):
         
         self.tx_counter += 1
         # print("tx #%d" % self.tx_counter)
-        transmit_log.write("tx #%d" % self.tx_counter)
+        transmit_log.write("tx #%d\n" % self.tx_counter)
         
         BOARD.led_off()
         sleep(4)
