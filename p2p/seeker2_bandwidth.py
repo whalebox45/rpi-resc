@@ -64,11 +64,11 @@ class LoRaRcvCont(LoRa):
         # data = [int(hex(ord(c)), 0) for c in test_str]
         
 
-        test_str = w1000.decode()
+        w1000_str = w1000.decode()
         # print(test_str)
 
         data = [x for x in w1000]
-        transmit_log.write(w1000)
+        transmit_log.write(w1000_str)
 
         self.write_payload(data)
         BOARD.led_on()
