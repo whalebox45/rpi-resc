@@ -101,7 +101,6 @@ class LoRaRcvCont(LoRa):
                 t_end = time.time()
 
             # sleep(0.5)
-            # self.reset_ptr_rx()
             self.set_mode(MODE.STDBY)
 
 
@@ -110,6 +109,8 @@ class LoRaRcvCont(LoRa):
             self.set_mode(MODE.TX)
             
             sleep(6)
+            self.reset_ptr_rx()
+            
 
 
 
