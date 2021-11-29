@@ -100,8 +100,9 @@ class LoRaRcvCont(LoRa):
                 sleep(0.1)
                 t_end = time.time()
 
+            self.set_mode(MODE.SLEEP)
             sleep(1)
-            self.set_mode(MODE.STDBY)
+            
 
 
             print("\nTX mode")
