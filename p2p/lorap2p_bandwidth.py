@@ -97,7 +97,7 @@ class LoRaRcvCont(LoRa):
                 status = self.get_modem_status()
                 sys.stdout.flush()
                 sys.stdout.write("\r%d %d %d" % (rssi_value, status['rx_ongoing'], status['modem_clear']))
-                # sleep(0.5)
+                sleep(0.1)
                 t_end = time.time()
 
             sleep(1)
