@@ -4,6 +4,7 @@
 import sys 
 from time import sleep
 import time
+from random import randrange
 from datetime import timedelta
 from socket import gethostname as socket_hostname
 sys.path.insert(0, '../')        
@@ -89,7 +90,9 @@ class LoRaRcvCont(LoRa):
             t_start = time.time()
             t_end = time.time()
 
-            while t_end - t_start <= 5:
+            rx_time = randrange(5,11)
+
+            while t_end - t_start <= rx_time:
                 rssi_value = self.get_rssi_value()
                 status = self.get_modem_status()
                 sys.stdout.flush()
