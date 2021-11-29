@@ -42,7 +42,8 @@ class LoRaRcvCont(LoRa):
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
         data = [c for c in payload]
-        print(data)
+        print(payload)
+        # print(data)
  
         self.reset_ptr_rx()
         BOARD.led_off()
