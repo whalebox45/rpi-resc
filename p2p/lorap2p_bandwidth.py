@@ -57,7 +57,7 @@ class LoRaRcvCont(LoRa):
         transmit_log.write("tx #%d\n" % self.tx_counter)
         
         BOARD.led_off()
-        sleep(4)
+        sleep(2)
         
         # test_str = f'transmitted from {socket_hostname()}'
         # print(test_str)
@@ -87,7 +87,7 @@ class LoRaRcvCont(LoRa):
             t_start = time.time()
             t_end = time.time()
 
-            while t_end - t_start < 3:
+            while t_end - t_start < 5:
                 rssi_value = self.get_rssi_value()
                 status = self.get_modem_status()
                 sys.stdout.flush()
