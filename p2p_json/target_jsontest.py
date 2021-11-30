@@ -104,7 +104,7 @@ class LoRaRcvCont(LoRa):
         transmit_str = f'{target_data}'
 
         sys.stdout.flush()
-        sys.stdout.write(f"tx #{self.tx_counter}\n{transmit_str}")
+        sys.stdout.write(f"tx #{self.tx_counter}: {transmit_str}")
 
         data = [int(hex(ord(c)), 0) for c in transmit_str]
 
@@ -171,6 +171,7 @@ args = parser.parse_args(lora)
 lora.set_mode(MODE.STDBY)
 lora.set_pa_config(pa_select=1)
 lora.set_rx_crc(True)
+lora.set_freq(433)
 #lora.set_coding_rate(CODING_RATE.CR4_6)
 #lora.set_pa_config(max_power=0, output_power=0)
 #lora.set_lna_gain(GAIN.G1)
