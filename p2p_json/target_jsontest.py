@@ -97,7 +97,7 @@ class LoRaRcvCont(LoRa):
         BOARD.led_off()
         # sleep(0.5)
         
-        test_str = f'transmitted from {hostname}'
+        test_str = f'{target_data}'
         print(test_str)
         data = [int(hex(ord(c)), 0) for c in test_str]
         
