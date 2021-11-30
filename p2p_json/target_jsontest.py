@@ -5,9 +5,13 @@ import sys
 from time import sleep
 import time
 from random import randrange
+
 import socket
 import uuid
 import json
+
+from serial import Serial
+import pynmea2
 
 
 sys.path.insert(0, '../')        
@@ -33,9 +37,6 @@ def get_serial():
 
 
 
-
-
-
 def get_mac_address(hasColon=False):
     mac=uuid.UUID(int = uuid.getnode()).hex[-12:]
     if hasColon:
@@ -44,14 +45,46 @@ def get_mac_address(hasColon=False):
 
 
 
+try:
+    pf = open('target_info.json','r')
+except:
+    pf = []
+finally:
+    pdata = json.load(pf)
 
 
 
-pf = open('target_info.json','r')
-pdata = json.load(pf)
+
+
+
+def gps_nmea():
+    while True:
+        global gps_stop
+        port = "/dev/ttyAMA0"
+        ser = Serial(port, baudrate=9600, timeout=0.5)
+        dataout = pynmea2.NMEAStreamReader()
+        newdata = ser.readline()
+        # print(newdata)
+
+        
+        if newdata[0:6] == b"$GPRMC":
+            newmsg = pynmea2.parse(newdata.decode('ascii'))
+            lat = newmsg.latitude
+            lng = newmsg.longitude
+            gps = "Lat: " + f'{lat}' + "Lng: " + f'{lng}'
+            print(gps)
+        
+        if gps_stop:
+            break
+
+
+gps_stop = false
+
+
 hostname = socket.gethostname()
 serialno = get_serial()
 macaddr = get_mac_address()
+
 
 target_data = dict(
     {
@@ -103,8 +136,7 @@ class LoRaRcvCont(LoRa):
         
         transmit_str = f'{target_data}'
 
-        sys.stdout.flush()
-        sys.stdout.write(f"\ntx #{self.tx_counter}: {transmit_str}")
+        print(f"\ntx #{self.tx_counter}: {transmit_str}")
 
         data = [int(hex(ord(c)), 0) for c in transmit_str]
 
@@ -202,6 +234,8 @@ finally:
     lora.set_mode(MODE.SLEEP)
     print(lora)
     BOARD.teardown()
+
+    gps_stop = True
 
     # w1000_file.close()
     # transmit_log.close()
