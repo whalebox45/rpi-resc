@@ -98,10 +98,9 @@ class LoRaRcvCont(LoRa):
         
         self.tx_counter += 1
         print("\ntx #%d" % self.tx_counter)
-        # transmit_log.write("tx #%d\n" % self.tx_counter)
         
         BOARD.led_off()
-        # sleep(0.5)
+        
         
         transmit_str = f'{target_data}'
         print(transmit_str)
@@ -110,6 +109,7 @@ class LoRaRcvCont(LoRa):
         self.write_payload(data)
         BOARD.led_on()
         self.set_mode(MODE.TX)
+        sleep(0.25)
 
     def start(self):
         
