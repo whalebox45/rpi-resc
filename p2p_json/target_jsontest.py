@@ -78,7 +78,7 @@ def gps_nmea():
             break
 
 
-gps_stop = false
+gps_stop = False
 
 
 hostname = socket.gethostname()
