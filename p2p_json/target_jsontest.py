@@ -36,9 +36,11 @@ def get_serial():
 
 
 
-def get_mac_address():
+def get_mac_address(hasColon=False):
     mac=uuid.UUID(int = uuid.getnode()).hex[-12:]
-    return ":".join([mac[e:e+2] for e in range(0,11,2)])
+    if hasColon:
+        return ":".join([mac[e:e+2] for e in range(0,11,2)])
+    else: return str(mac)
 
 
 
@@ -101,15 +103,9 @@ class LoRaRcvCont(LoRa):
         BOARD.led_off()
         # sleep(0.5)
         
-        test_str = f'{target_data}'
-        print(test_str)
-        data = [int(hex(ord(c)), 0) for c in test_str]
-        
-
-        # w1000_str = w1000.decode()
-        # print(test_str)
-        # data = [x for x in w1000]
-        # transmit_log.write(w1000_str)
+        transmit_str = f'{target_data}'
+        print(transmit_str)
+        data = [int(hex(ord(c)), 0) for c in transmit_str]
 
         self.write_payload(data)
         BOARD.led_on()
