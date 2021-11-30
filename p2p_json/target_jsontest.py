@@ -97,13 +97,15 @@ class LoRaRcvCont(LoRa):
         self.clear_irq_flags(TxDone=1)
         
         self.tx_counter += 1
-        print("\ntx #%d" % self.tx_counter)
         
         BOARD.led_off()
         
         
         transmit_str = f'{target_data}'
-        print(transmit_str)
+
+        sys.stdout.flush()
+        sys.stdout.write(f"tx #{self.tx_counter}\n{transmit_str}")
+
         data = [int(hex(ord(c)), 0) for c in transmit_str]
 
         self.write_payload(data)
