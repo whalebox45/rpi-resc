@@ -44,40 +44,6 @@ def get_mac_address(hasColon=False):
 
 
 
-try:
-    pf = open('target_info.json','r')
-except:
-    pf = []
-finally:
-    pdata = json.load(pf)
-
-
-
-
-
-
-def gps_nmea():
-    while True:
-        global gps_stop
-        port = "/dev/ttyAMA0"
-        ser = Serial(port, baudrate=9600, timeout=0.5)
-        dataout = pynmea2.NMEAStreamReader()
-        newdata = ser.readline()
-        # print(newdata)
-
-        
-        if newdata[0:6] == b"$GPRMC":
-            newmsg = pynmea2.parse(newdata.decode('ascii'))
-            lat = newmsg.latitude
-            lng = newmsg.longitude
-            gps = "Lat: " + f'{lat}' + "Lng: " + f'{lng}'
-            print(gps)
-        
-        if gps_stop:
-            break
-
-
-gps_stop = False
 
 
 hostname = socket.gethostname()
@@ -89,8 +55,7 @@ target_data = dict(
     {
         "Hostname": socket.gethostname(),
         "SerialNo.": get_serial(),
-        "MACAddress": get_mac_address(),
-        "PersonalData": pdata
+        "MACAddress": get_mac_address()
     }
 )
 
@@ -177,7 +142,6 @@ class LoRaRcvCont(LoRa):
                     "Hostname": socket.gethostname(),
                     "SerialNo.": get_serial(),
                     "MACAddress": get_mac_address(),
-                    "PersonalData": pdata
                 }
             )
 
@@ -234,4 +198,5 @@ finally:
     print(lora)
     BOARD.teardown()
 
-    gps_stop = True
+
+    
