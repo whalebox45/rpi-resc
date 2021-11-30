@@ -104,7 +104,7 @@ class LoRaRcvCont(LoRa):
         transmit_str = f'{target_data}'
 
         sys.stdout.flush()
-        sys.stdout.write(f"tx #{self.tx_counter}: {transmit_str}")
+        sys.stdout.write(f"\rtx #{self.tx_counter}: {transmit_str}")
 
         data = [int(hex(ord(c)), 0) for c in transmit_str]
 
