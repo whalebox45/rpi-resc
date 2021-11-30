@@ -48,10 +48,14 @@ def get_mac_address():
 pf = open('target_info.json','r')
 pdata = json.load(pf)
 hostname = socket.gethostname()
+serialno = get_serial()
+macaddr = get_mac_address()
 
 target_data = dict(
     {
-        "Hostname": hostname,
+        "Hostname": socket.gethostname(),
+        "SerialNo.": get_serial(),
+        "MACAddress": get_mac_address(),
         "PersonalData": pdata
     }
 )
@@ -91,7 +95,7 @@ class LoRaRcvCont(LoRa):
         self.clear_irq_flags(TxDone=1)
         
         self.tx_counter += 1
-        print("tx #%d" % self.tx_counter)
+        print("\ntx #%d" % self.tx_counter)
         # transmit_log.write("tx #%d\n" % self.tx_counter)
         
         BOARD.led_off()
@@ -139,7 +143,14 @@ class LoRaRcvCont(LoRa):
             self.set_mode(MODE.SLEEP)
             sleep(1)
             
-
+            target_data = dict(
+                {
+                    "Hostname": socket.gethostname(),
+                    "SerialNo.": get_serial(),
+                    "MACAddress": get_mac_address(),
+                    "PersonalData": pdata
+                }
+            )
 
             print("\nTX mode")
             self.set_dio_mapping([1,0,0,0,0,0])
