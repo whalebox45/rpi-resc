@@ -85,17 +85,6 @@ serialno = get_serial()
 macaddr = get_mac_address()
 
 
-target_data = dict(
-    {
-        "Hostname": socket.gethostname(),
-        "SerialNo.": get_serial(),
-        "MACAddress": get_mac_address(),
-        "PersonalData": pdata
-    }
-)
-
-
-
 
 
 BOARD.setup()
@@ -103,6 +92,16 @@ parser = LoRaArgumentParser("Continous LoRa receiver.")
 
 
 class LoRaRcvCont(LoRa):
+
+    target_data = dict(
+                {
+                    "Hostname": socket.gethostname(),
+                    "SerialNo.": get_serial(),
+                    "MACAddress": get_mac_address(),
+                    "PersonalData": pdata
+                }
+            )
+
     def __init__(self, verbose=False):
         super(LoRaRcvCont, self).__init__(verbose)
         self.set_mode(MODE.SLEEP)
@@ -133,7 +132,7 @@ class LoRaRcvCont(LoRa):
         BOARD.led_off()
         
         
-        transmit_str = f'{target_data}'
+        transmit_str = f'{self.target_data}'
 
         print(f"\ntx #{self.tx_counter}: {transmit_str}")
 
@@ -172,7 +171,7 @@ class LoRaRcvCont(LoRa):
             self.set_mode(MODE.SLEEP)
             sleep(1)
             
-            target_data = dict(
+            self.target_data = dict(
                 {
                     "Hostname": socket.gethostname(),
                     "SerialNo.": get_serial(),

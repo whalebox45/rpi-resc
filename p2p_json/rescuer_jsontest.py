@@ -51,17 +51,6 @@ serialno = get_serial()
 macaddr = get_mac_address()
 
 
-target_data = dict(
-    {
-        "Hostname": socket.gethostname(),
-        "SerialNo.": get_serial(),
-        "MACAddress": get_mac_address()
-    }
-)
-
-
-
-
 
 BOARD.setup()
 parser = LoRaArgumentParser("Continous LoRa receiver.")
@@ -178,7 +167,7 @@ lora.set_freq(433)
 print(lora)
 assert(lora.get_agc_auto_on() == 1)
 
-
+payload_length = lora.get_payload_length()
 
 
 
