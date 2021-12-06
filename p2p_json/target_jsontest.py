@@ -136,9 +136,9 @@ class LoRaTarget(LoRa):
 
 
 
-        print(f"\ntx #{self.tx_counter}: {transmit_queue}")
+        print(f"\ntx #{self.tx_counter}: {self.transmit_queue}")
 
-        data = [int(hex(ord(c)), 0) for c in transmit_queue]
+        data = [int(hex(ord(c)), 0) for c in self.transmit_queue]
 
 
 
