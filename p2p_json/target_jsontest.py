@@ -194,6 +194,8 @@ class LoRaTarget(LoRa):
             self.set_mode(MODE.TX)
             
             sleep(6)
+            self.transmit_str = ""
+            
             self.reset_ptr_rx()
             
 
