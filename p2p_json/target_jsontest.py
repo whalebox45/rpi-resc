@@ -108,7 +108,7 @@ class LoRaTarget(LoRa):
 
     def on_tx_done(self):
         
-        transmit_partition_len = int(self.get_payload_length()) - 4 
+        transmit_partition_len = int(self.get_payload_length()) - 10
         
         self.set_mode(MODE.STDBY)
         self.clear_irq_flags(TxDone=1)
@@ -121,8 +121,6 @@ class LoRaTarget(LoRa):
         if self.transmit_str == "":
             self.transmit_str = f'{self.target_data}'
 
-        
-        # transmit_queue = ""
 
 
         # Pop payload queue
@@ -132,7 +130,7 @@ class LoRaTarget(LoRa):
             self.transmit_str = self.transmit_str[transmit_partition_len:]
         else:
             self.transmit_queue = self.transmit_str
-            self.transmit_str = ""
+            
 
 
 
@@ -145,7 +143,11 @@ class LoRaTarget(LoRa):
 
 
         self.write_payload(data)
+        
+        self.transmit_str = ""
+        
         BOARD.led_on()
+
         self.set_mode(MODE.TX)
         sleep(0.25)
 
