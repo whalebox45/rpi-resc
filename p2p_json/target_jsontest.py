@@ -37,7 +37,6 @@ finally:
 
 def gps_nmea():
     while True:
-        print("gps ok")
         global gps_stop
         port = "/dev/ttyAMA0"
         ser = Serial(port, baudrate=9600, timeout=0.5)
@@ -51,6 +50,8 @@ def gps_nmea():
             lat = newmsg.latitude
             lng = newmsg.longitude
             gps = "Lat: " + f'{lat}' + "Lng: " + f'{lng}'
+
+            print()
             print(gps)
         
         if gps_stop:
