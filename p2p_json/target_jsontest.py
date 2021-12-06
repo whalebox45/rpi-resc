@@ -81,6 +81,8 @@ class LoRaTarget(LoRa):
                 }
             )
 
+    transmit_str = ""
+    transmit_queue = ""
 
     def __init__(self, verbose=False):
         super(LoRaTarget, self).__init__(verbose)
@@ -113,22 +115,21 @@ class LoRaTarget(LoRa):
         
         BOARD.led_off()
         
-        self.transmit_str = ""
 
         if not self.transmit_str:
             self.transmit_str = f'{self.target_data}'
 
         
-        transmit_queue = ""
+        # transmit_queue = ""
 
 
         # Pop payload queue
         if len(self.transmit_str) > transmit_partition_len:
 
-            transmit_queue = self.transmit_str[:transmit_partition_len]
+            self.transmit_queue = self.transmit_str[:transmit_partition_len]
             self.transmit_str = self.transmit_str[transmit_partition_len:]
         else:
-            transmit_queue = self.transmit_str
+            self.transmit_queue = self.transmit_str
             self.transmit_str = ""
 
 
