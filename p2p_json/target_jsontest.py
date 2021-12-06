@@ -49,7 +49,7 @@ def gps_nmea():
             newmsg = pynmea2.parse(newdata.decode('ascii'))
             lat = newmsg.latitude
             lng = newmsg.longitude
-            gps = "Lat: " + f'{lat}' + "Lng: " + f'{lng}'
+            gps = "Lat: " + str(f'{lat}') + "Lng: " + str(f'{lng}')
             print(gps)
         
         if gps_stop:
