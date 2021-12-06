@@ -130,6 +130,7 @@ class LoRaTarget(LoRa):
             self.transmit_str = self.transmit_str[transmit_partition_len:]
         else:
             self.transmit_queue = self.transmit_str
+            self.transmit_str = ""
             
 
 
@@ -144,7 +145,7 @@ class LoRaTarget(LoRa):
 
         self.write_payload(data)
         
-        self.transmit_str = ""
+        
         
         BOARD.led_on()
 
