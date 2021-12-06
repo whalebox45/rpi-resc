@@ -37,12 +37,13 @@ finally:
 
 def gps_nmea():
     while True:
+        print("gps ok")
         global gps_stop
         port = "/dev/ttyAMA0"
         ser = Serial(port, baudrate=9600, timeout=0.5)
         dataout = pynmea2.NMEAStreamReader()
         newdata = ser.readline()
-        print(newdata)
+        # print(newdata)
 
         
         if newdata[0:6] == b"$GPRMC":
