@@ -113,7 +113,7 @@ class LoRaTarget(LoRa):
         
         BOARD.led_off()
         
-
+        self.transmit_str = ""
 
         if not self.transmit_str:
             self.transmit_str = f'{self.target_data}'
