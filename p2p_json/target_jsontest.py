@@ -223,11 +223,11 @@ payload_length = lora.get_payload_length()
 
 gps_thread = threading.Thread(target=gps_nmea)
 
-
+gps_thread.start()
 
 try:
     lora.start()
-    gps_thread.start()
+    
 except KeyboardInterrupt:
     sys.stdout.flush()
     print("")
