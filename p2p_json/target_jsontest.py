@@ -6,8 +6,9 @@ import time
 from random import randrange
 
 import socket
-import uuid
 import json
+
+import threading
 
 from serial import Serial
 import pynmea2
@@ -18,29 +19,7 @@ from SX127x.LoRa import *
 from SX127x.LoRaArgumentParser import LoRaArgumentParser
 from SX127x.board_config import BOARD
 
-
-
-
-
-def get_serial():
-    cpuserial = "000000000000000"
-    try:
-        cf = open('/proc/cpuinfo','r')
-        for line in cf:
-            if line[0:6] == 'Serial':
-                cpuserial = line[10:26]
-        cf.close()
-    except:
-        cpuserial = "ERROR0000000000"
-    return cpuserial
-
-
-
-def get_mac_address(hasColon=False):
-    mac=uuid.UUID(int = uuid.getnode()).hex[-12:]
-    if hasColon:
-        return ":".join([mac[e:e+2] for e in range(0,11,2)])
-    else: return str(mac)
+from SystemInfo import get_serial, get_mac_address
 
 
 
@@ -91,7 +70,7 @@ BOARD.setup()
 parser = LoRaArgumentParser("Continous LoRa receiver.")
 
 
-class LoRaRcvCont(LoRa):
+class LoRaTarget(LoRa):
 
     target_data = dict(
                 {
@@ -102,8 +81,9 @@ class LoRaRcvCont(LoRa):
                 }
             )
 
+
     def __init__(self, verbose=False):
-        super(LoRaRcvCont, self).__init__(verbose)
+        super(LoRaTarget, self).__init__(verbose)
         self.set_mode(MODE.SLEEP)
         self.set_dio_mapping([0,0,0,0,0,0])
         
@@ -124,6 +104,8 @@ class LoRaRcvCont(LoRa):
 
     def on_tx_done(self):
         
+        transmit_partition_len = int(self.get_payload_length()) - 4 
+        
         self.set_mode(MODE.STDBY)
         self.clear_irq_flags(TxDone=1)
         
@@ -131,12 +113,33 @@ class LoRaRcvCont(LoRa):
         
         BOARD.led_off()
         
+
+
+        if not self.transmit_str:
+            self.transmit_str = f'{self.target_data}'
+
         
-        transmit_str = f'{self.target_data}'
+        transmit_queue = ""
 
-        print(f"\ntx #{self.tx_counter}: {transmit_str}")
 
-        data = [int(hex(ord(c)), 0) for c in transmit_str]
+        # Pop payload queue
+        if len(self.transmit_str) > transmit_partition_len:
+
+            transmit_queue = self.transmit_str[:transmit_partition_len]
+            self.transmit_str = self.transmit_str[transmit_partition_len:]
+        else:
+            transmit_queue = self.transmit_str
+            self.transmit_str = ""
+
+
+
+
+
+        print(f"\ntx #{self.tx_counter}: {transmit_queue}")
+
+        data = [int(hex(ord(c)), 0) for c in transmit_queue]
+
+
 
         self.write_payload(data)
         BOARD.led_on()
@@ -195,7 +198,7 @@ class LoRaRcvCont(LoRa):
 
 
 
-lora = LoRaRcvCont(verbose=False)
+lora = LoRaTarget(verbose=False)
 args = parser.parse_args(lora)
 
 lora.set_mode(MODE.STDBY)
@@ -213,15 +216,16 @@ lora.set_freq(433)
 print(lora)
 assert(lora.get_agc_auto_on() == 1)
 
+payload_length = lora.get_payload_length()
 
 
-
-
+gps_thread = threading.Thread(target=gps_nmea)
 
 
 
 try:
     lora.start()
+    gps_thread.start()
 except KeyboardInterrupt:
     sys.stdout.flush()
     print("")

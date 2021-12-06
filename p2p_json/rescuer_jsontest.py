@@ -6,8 +6,6 @@ import time
 from random import randrange
 
 import socket
-import uuid
-import json
 
 from serial import Serial
 import pynmea2
@@ -19,30 +17,7 @@ from SX127x.LoRaArgumentParser import LoRaArgumentParser
 from SX127x.board_config import BOARD
 
 
-
-
-
-def get_serial():
-    cpuserial = "000000000000000"
-    try:
-        cf = open('/proc/cpuinfo','r')
-        for line in cf:
-            if line[0:6] == 'Serial':
-                cpuserial = line[10:26]
-        cf.close()
-    except:
-        cpuserial = "ERROR0000000000"
-    return cpuserial
-
-
-
-def get_mac_address(hasColon=False):
-    mac=uuid.UUID(int = uuid.getnode()).hex[-12:]
-    if hasColon:
-        return ":".join([mac[e:e+2] for e in range(0,11,2)])
-    else: return str(mac)
-
-
+from SystemInfo import get_serial, get_mac_address
 
 
 
@@ -56,9 +31,19 @@ BOARD.setup()
 parser = LoRaArgumentParser("Continous LoRa receiver.")
 
 
-class LoRaRcvCont(LoRa):
+class LoRaRescuer(LoRa):
+
+
+    rescuer_data = dict(
+        {
+            "Hostname": socket.gethostname(),
+            "SerialNo.": get_serial(),
+            "MACAddress": get_mac_address()
+        }
+    )
+
     def __init__(self, verbose=False):
-        super(LoRaRcvCont, self).__init__(verbose)
+        super(LoRaRescuer, self).__init__(verbose)
         self.set_mode(MODE.SLEEP)
         self.set_dio_mapping([0,0,0,0,0,0])
         
@@ -87,7 +72,7 @@ class LoRaRcvCont(LoRa):
         BOARD.led_off()
         
         
-        transmit_str = f'{target_data}'
+        transmit_str = f'{self.rescuer_data}'
 
         print(f"\ntx #{self.tx_counter}: {transmit_str}")
 
@@ -126,7 +111,7 @@ class LoRaRcvCont(LoRa):
             self.set_mode(MODE.SLEEP)
             sleep(1)
             
-            target_data = dict(
+            self.rescuer_data = dict(
                 {
                     "Hostname": socket.gethostname(),
                     "SerialNo.": get_serial(),
@@ -149,7 +134,7 @@ class LoRaRcvCont(LoRa):
 
 
 
-lora = LoRaRcvCont(verbose=False)
+lora = LoRaRescuer(verbose=False)
 args = parser.parse_args(lora)
 
 lora.set_mode(MODE.STDBY)
