@@ -7,8 +7,6 @@ from random import randrange
 
 import socket
 
-from serial import Serial
-import pynmea2
 
 
 sys.path.insert(0, '../')        
