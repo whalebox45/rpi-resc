@@ -1,28 +1,39 @@
-#Coded by Yashraj Singh Chouhan
+
 import socket, threading
 nickname = input("Choose your nickname: ")
 
-client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)      #socket initialization
-client.connect(('127.0.0.1', 7976))                             #connecting client to server
+parser = argparse.ArgumentParser()
+parser.add_argument("-a","--address",dest='address',action="store",type=str)
+
+args = parser.parse_args()
+if args.address:
+    host = args.address
+else: host = '127.0.0.1'
+
+port = 7976
+
+
+client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client.connect((host, port))
 
 def receive():
-    while True:                                                 #making valid connection
+    while True:
         try:
             message = client.recv(1024).decode('ascii')
             if message == 'NICKNAME':
                 client.send(nickname.encode('ascii'))
             else:
                 print(message)
-        except:                                                 #case on wrong ip/port details
+        except:
             print("An error occured!")
             client.close()
             break
 def write():
-    while True:                                                 #message layout
+    while True:
         message = '{}: {}'.format(nickname, input(''))
         client.send(message.encode('ascii'))
 
-receive_thread = threading.Thread(target=receive)               #receiving multiple messages
+receive_thread = threading.Thread(target=receive)
 receive_thread.start()
-write_thread = threading.Thread(target=write)                   #sending messages 
+write_thread = threading.Thread(target=write)
 write_thread.start()

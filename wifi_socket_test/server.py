@@ -1,26 +1,34 @@
-#Coded by Yashraj Singh Chouhan
-import socket, threading                                                #Libraries import
+import socket, threading
+import argparse
 
-host = '127.0.0.1'                                                      #LocalHost
-port = 7976                                                             #Choosing unreserved port
 
-server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)              #socket initialization
-server.bind((host, port))                                               #binding host and port to socket
+parser = argparse.ArgumentParser()
+parser.add_argument("-a","--address",dest='address',action="store",type=str)
+
+args = parser.parse_args()
+if args.address:
+    host = args.address
+else: host = '127.0.0.1'
+
+port = 7976
+
+server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+server.bind((host, port))
 server.listen()
 
 clients = []
 nicknames = []
 
-def broadcast(message):                                                 #broadcast function declaration
+def broadcast(message):
     for client in clients:
         client.send(message)
 
-def handle(client):                                         
+def handle(client):
     while True:
-        try:                                                            #recieving valid messages from client
+        try:
             message = client.recv(1024)
             broadcast(message)
-        except:                                                         #removing clients
+        except:
             index = clients.index(client)
             clients.remove(client)
             client.close()
@@ -29,10 +37,10 @@ def handle(client):
             nicknames.remove(nickname)
             break
 
-def receive():                                                          #accepting multiple clients
+def receive():
     while True:
         client, address = server.accept()
-        print("Connected with {}".format(str(address)))       
+        print("Connected with {}".format(str(address)))
         client.send('NICKNAME'.encode('ascii'))
         nickname = client.recv(1024).decode('ascii')
         nicknames.append(nickname)
