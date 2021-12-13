@@ -1,5 +1,5 @@
 
-import socket, threading
+import socket, threading, argparse
 nickname = input("Choose your nickname: ")
 
 parser = argparse.ArgumentParser()
