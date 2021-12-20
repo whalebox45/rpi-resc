@@ -1,29 +1,24 @@
-
 import socket, threading, argparse
-nickname = input("Choose your nickname: ")
+
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-a","--address",dest='address',action="store",type=str)
-
 args = parser.parse_args()
-if args.address:
-    host = args.address
-else: host = '127.0.0.1'
+if args.address: HOST = args.address
+else: HOST = '127.0.0.1'
 
-port = 7976
+PORT = 7976
 
+nickname = input("Choose your nickname: ")
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-client.connect((host, port))
+client.connect((HOST, PORT))
 
 def receive():
     while True:
         try:
-            message = client.recv(1024).decode('ascii')
-            if message == 'NICKNAME':
-                client.send(nickname.encode('ascii'))
-            else:
-                print(message)
+            message = client.recv(1024).decode('utf-8')
+            print(message)
         except:
             print("An error occured!")
             client.close()
@@ -31,7 +26,7 @@ def receive():
 def write():
     while True:
         message = '{}: {}'.format(nickname, input(''))
-        client.send(message.encode('ascii'))
+        client.send(message.encode('utf-8'))
 
 receive_thread = threading.Thread(target=receive)
 receive_thread.start()

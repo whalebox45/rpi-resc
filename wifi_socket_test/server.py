@@ -4,20 +4,23 @@ import argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-a","--address",dest='address',action="store",type=str)
-
 args = parser.parse_args()
-if args.address:
-    host = args.address
-else: host = '127.0.0.1'
+if args.address: HOST = args.address
+else: HOST = '127.0.0.1'
 
-port = 7976
+PORT = 7976
+
+
 
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-server.bind((host, port))
+server.settimeout(3)
+server.bind((HOST, PORT))
 server.listen()
 
+
 clients = []
-nicknames = []
+
+
 
 def broadcast(message):
     for client in clients:
@@ -27,28 +30,42 @@ def handle(client):
     while True:
         try:
             message = client.recv(1024)
+            print(message.decode('utf-8'))
             broadcast(message)
         except:
-            index = clients.index(client)
             clients.remove(client)
             client.close()
-            nickname = nicknames[index]
-            broadcast('{} left!'.format(nickname).encode('ascii'))
-            nicknames.remove(nickname)
             break
+
 
 def receive():
     while True:
-        client, address = server.accept()
-        print("Connected with {}".format(str(address)))
-        client.send('NICKNAME'.encode('ascii'))
-        nickname = client.recv(1024).decode('ascii')
-        nicknames.append(nickname)
-        clients.append(client)
-        print("Nickname is {}".format(nickname))
-        broadcast("{} joined!".format(nickname).encode('ascii'))
-        client.send('Connected to server!'.encode('ascii'))
-        thread = threading.Thread(target=handle, args=(client,))
-        thread.start()
+        try:
+            client, address = server.accept()
+            print("Connected with {}".format(str(address)))
+            clients.append(client)
 
-receive()
+            client.send('Connected to server!'.encode('ascii'))
+
+            thread = threading.Thread(target=handle, args=(client,))
+            thread.start()
+
+        except socket.timeout as se:
+            pass
+
+        except Exception as e:
+            print(str(e))
+            server.close()
+            return
+
+    
+try:
+    recv_thread = threading.Thread(target=receive)
+    recv_thread.start()
+    while True:
+        pass
+except KeyboardInterrupt:
+    for c in clients:
+        c.close()
+    server.close()
+    exit(0)
