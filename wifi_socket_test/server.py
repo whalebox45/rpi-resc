@@ -21,7 +21,6 @@ server.listen()
 clients = []
 
 
-
 def broadcast(message):
     for client in clients:
         client.send(message)
@@ -58,14 +57,22 @@ def receive():
             server.close()
             return
 
-    
+def write():
+    while True:
+        try:
+            message = input()
+            broadcast(message.encode('utf-8'))
+        except Exception as e:
+            print(str(e))
+            server.close()
+            for c in clients:
+                c.close()
+            return
 try:
     recv_thread = threading.Thread(target=receive)
     recv_thread.start()
-    while True:
-        pass
-except KeyboardInterrupt:
-    for c in clients:
-        c.close()
-    server.close()
-    exit(0)
+    write_thread = threading.Thread(target=write)
+    write_thread.start()
+except Exception as e:
+    exit(1)
+

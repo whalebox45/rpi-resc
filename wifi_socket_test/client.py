@@ -19,16 +19,27 @@ def receive():
         try:
             message = client.recv(1024).decode('utf-8')
             print(message)
-        except:
-            print("An error occured!")
+        except (Exception,ConnectionResetError) as e:
+            print(str(e))
             client.close()
-            break
+            return
+
+
 def write():
     while True:
-        message = '{}: {}'.format(nickname, input(''))
-        client.send(message.encode('utf-8'))
+        try:
+            message = '{}: {}'.format(nickname, input(''))
+            client.send(message.encode('utf-8'))
+        except Exception as e:
+            print(str(e))
+            client.close()
+            return
 
-receive_thread = threading.Thread(target=receive)
-receive_thread.start()
-write_thread = threading.Thread(target=write)
-write_thread.start()
+
+try:
+    receive_thread = threading.Thread(target=receive)
+    receive_thread.start()
+    write_thread = threading.Thread(target=write)
+    write_thread.start()
+except Exception as e:
+    exit(1)
