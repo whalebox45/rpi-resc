@@ -1,8 +1,19 @@
 import socket
 import threading
+import argparse
 from time import sleep
 
-HOST = '127.0.0.1'
+
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("-a","--address",dest='address',action="store",type=str)
+
+args = parser.parse_args()
+if args.address:
+    HOST = args.address
+else: HOST = '127.0.0.1'
+
 PORT = 7976
 
 client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
