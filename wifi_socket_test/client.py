@@ -17,11 +17,9 @@ client.connect((HOST, PORT))
 def receive():
     while True:
         try:
-            print("test: ",end='')
             message = client.recv(1024).decode('utf-8')
             print(message)
         except (Exception,ConnectionResetError) as e:
-            raise e
             print(str(e))
             client.close()
             return
@@ -33,7 +31,6 @@ def write():
             message = '{}: {}'.format(nickname, input(''))
             client.send(message.encode('utf-8'))
         except Exception as e:
-            raise e
             print(str(e))
             client.close()
             return

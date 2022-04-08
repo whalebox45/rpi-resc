@@ -74,5 +74,8 @@ try:
     write_thread = threading.Thread(target=write)
     write_thread.start()
 except Exception as e:
+    broadcast('Disconnected')
+    for c in clients:
+        c.close()
     exit(1)
 
