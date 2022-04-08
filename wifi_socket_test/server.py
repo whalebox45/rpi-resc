@@ -1,5 +1,8 @@
+from concurrent.futures.process import _ThreadWakeup
 import socket, threading
 import argparse
+
+from numpy import true_divide
 
 
 parser = argparse.ArgumentParser()
@@ -70,9 +73,11 @@ def write():
             return
 try:
     recv_thread = threading.Thread(target=receive)
+    recv_thread.daemon=True
     recv_thread.start()
     write_thread = threading.Thread(target=write)
     write_thread.start()
+    write_thread.daemon=True
 except Exception as e:
     broadcast('Disconnected')
     for c in clients:
