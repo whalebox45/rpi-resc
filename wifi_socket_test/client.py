@@ -42,4 +42,5 @@ try:
     write_thread = threading.Thread(target=write)
     write_thread.start()
 except Exception as e:
+    client.close()
     exit(1)
