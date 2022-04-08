@@ -17,6 +17,7 @@ client.connect((HOST, PORT))
 def receive():
     while True:
         try:
+            print("test: ",end='')
             message = client.recv(1024).decode('utf-8')
             print(message)
         except (Exception,ConnectionResetError) as e:
