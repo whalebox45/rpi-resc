@@ -20,7 +20,7 @@ def receive():
             message = client.recv(1024).decode('utf-8')
             print(message)
             if message == "Disconnected":
-                raise Exception
+                return
         except (Exception,ConnectionResetError) as e:
             print(str(e))
             client.close()
