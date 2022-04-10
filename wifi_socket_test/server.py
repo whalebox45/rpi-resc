@@ -2,8 +2,6 @@ from concurrent.futures.process import _ThreadWakeup
 import socket, threading
 import argparse
 
-from numpy import true_divide
-
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-a","--address",dest='address',action="store",type=str)
