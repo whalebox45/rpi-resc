@@ -82,5 +82,6 @@ except Exception as e:
     broadcast('Disconnected')
     for c in clients:
         c.close()
+    input()
     exit(1)
 
