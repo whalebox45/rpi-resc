@@ -41,11 +41,6 @@ try:
     receive_thread.start()
     write_thread = threading.Thread(target=write)
     write_thread.start()
-except KeyboardInterrupt as ke:
-    client.accept()
-    print(ke)
-    input()
-    exit(1)
 except Exception as e:
     client.close()
     exit(1)

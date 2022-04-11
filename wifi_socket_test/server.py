@@ -77,9 +77,5 @@ try:
     write_thread.start()
     write_thread.daemon=True
 except Exception as e:
-    broadcast('Disconnected')
     for c in clients:
         c.close()
-    input()
-    exit(1)
-
