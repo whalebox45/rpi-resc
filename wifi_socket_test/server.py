@@ -69,13 +69,18 @@ def write():
             for c in clients:
                 c.close()
             return
+
+recv_thread = threading.Thread(target=receive)
+recv_thread.setDaemon(True) 
+write_thread = threading.Thread(target=write)
+write_thread.setDaemon(True)
+
 try:
-    recv_thread = threading.Thread(target=receive)
-    recv_thread.setDaemon(True) 
-    write_thread = threading.Thread(target=write)
-    write_thread.setDaemon(True)
+    
     recv_thread.start()
-    write_thread.start() 
+    write_thread.start()
+    while True:
+        pass
 except Exception as e:
     for c in clients:
         c.close()
