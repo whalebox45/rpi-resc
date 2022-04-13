@@ -18,6 +18,7 @@ def receive():
     while True:
         try:
             message = client.recv(1024).decode('ascii')
+            print('getmsg')
             print(message)
         except (Exception,ConnectionResetError) as e:
             print(str(e))
