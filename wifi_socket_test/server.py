@@ -19,11 +19,11 @@ server.bind((HOST, PORT))
 server.listen()
 
 
-clients = []
+clients_list = []
 
 
 def broadcast(message):
-    for client in clients:
+    for client in clients_list:
         client.send(message)
 
 def handle(client):
@@ -37,8 +37,8 @@ def handle(client):
 
             broadcast(message_str)
         except Exception as e:
-            print('{} is Disconnected'.format(client))
-            clients.remove(client)
+            print('{} is Disconnected'.format(client.getsockname()))
+            clients_list.remove(client)
             client.close()
             return
 
@@ -48,7 +48,7 @@ def receive():
         try:
             client, address = server.accept()
             print("Connected with {},{}".format(str(client),str(address)))
-            clients.append(client)
+            clients_list.append(client)
 
             client.send('Connected to server!'.encode('ascii'))
 
@@ -71,7 +71,7 @@ def write():
         except Exception as e:
             print(str(e))
             server.close()
-            for c in clients:
+            for c in clients_list:
                 c.close()
             return
 
@@ -87,5 +87,5 @@ try:
     while True:
         pass
 except Exception as e:
-    for c in clients:
+    for c in clients_list:
         c.close()
