@@ -31,7 +31,7 @@ def write():
             message_input = input('')
             message = '{} ({}): {}'.format(nickname,str(client.getsockname()), message_input)
             # client.send(message.encode('utf-8'))
-            client.send("test".encode('utf-8'))
+            client.send("test")
         except Exception as e:
             print(str(e))
             client.close()
