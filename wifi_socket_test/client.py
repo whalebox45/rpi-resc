@@ -37,9 +37,9 @@ def write():
             return
 
 receive_thread = threading.Thread(target=receive)
-receive_thread.setDaemon(True)
+# receive_thread.setDaemon(True)
 write_thread = threading.Thread(target=write)
-write_thread.setDaemon(True)
+# write_thread.setDaemon(True)
 
 
 try:
@@ -50,6 +50,6 @@ try:
 
 except Exception as e:
     print(str(e))
-    client.send('{}:Disconnect'.format(client.getsockname()))
+    client.send('{}:Disconnect from {}'.format(client.getsockname(),str(e)))
     client.close()
     exit(1)
