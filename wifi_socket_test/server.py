@@ -42,7 +42,7 @@ def receive():
     while True:
         try:
             client, address = server.accept()
-            print("Connected with {}".format(str(address)))
+            print("Connected with {},{}".format(str(client),str(address)))
             clients.append(client)
 
             client.send('Connected to server!'.encode('ascii'))
