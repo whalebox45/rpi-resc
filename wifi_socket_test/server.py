@@ -30,12 +30,17 @@ def handle(client):
     while True:
         try:
             message = client.recv(1024)
-            print(message.decode('utf-8'))
-            broadcast(message)
-        except:
+            message_str = message.decode('utf-8')
+            if message_str == '{}:Disconnect'.format(client)):
+                raise Exception
+            print(message_str)
+
+            broadcast(message_str)
+        except Exception as e:
+            print('{} is Disconnected'.format(client))
             clients.remove(client)
             client.close()
-            break
+            return
 
 
 def receive():
