@@ -21,6 +21,8 @@ server.listen()
 
 clients_list = []
 
+class DisconnectSignal(Exception):
+    pass
 
 def broadcast(message):
     for client in clients_list:
@@ -36,8 +38,12 @@ def handle(client):
             print(message_str)
 
             broadcast(message_str)
-        except Exception as e:
+        except DisconnectSignal as de:
             print('{} is Disconnected'.format(client.getsockname()))
+            clients_list.remove(client)
+            client.close()
+            return
+        except Exception as e:
             clients_list.remove(client)
             client.close()
             return
