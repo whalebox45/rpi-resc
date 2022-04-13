@@ -1,4 +1,3 @@
-from concurrent.futures.process import _ThreadWakeup
 import socket, threading
 import argparse
 
@@ -38,12 +37,8 @@ def handle(client):
             print(message_str)
 
             broadcast(message_str)
-        except DisconnectSignal as de:
+        except Exception:
             print('{} is Disconnected'.format(client.getsockname()))
-            clients_list.remove(client)
-            client.close()
-            return
-        except Exception as e:
             clients_list.remove(client)
             client.close()
             return
