@@ -31,7 +31,7 @@ def handle(client):
     while True:
         try:
             message = client.recv(1024)
-            message_str = message.decode('utf-8')
+            message_str = message.decode('ascii')
             print(message_str)
             broadcast(message_str)
         except Exception as e:
@@ -65,7 +65,7 @@ def write():
     while True:
         try:
             message = str("Server:") + input()
-            broadcast(message.encode('utf-8'))
+            broadcast(message.encode('ascii'))
         except Exception as e:
             print(str(e))
             server.close()

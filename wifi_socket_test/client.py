@@ -17,7 +17,7 @@ client.connect((HOST, PORT))
 def receive():
     while True:
         try:
-            message = client.recv(1024).decode('utf-8')
+            message = client.recv(1024).decode('ascii')
             print(message)
         except (Exception,ConnectionResetError) as e:
             print(str(e))
@@ -31,7 +31,7 @@ def write():
             message_input = input('')
             message = '{} ({}): {}'.format(nickname,str(client.getsockname()), message_input)
             # client.send(message.encode('utf-8'))
-            client.send("test".encode('utf-8'))
+            client.send("test".encode('ascii'))
         except Exception as e:
             print(str(e))
             client.close()
@@ -51,6 +51,6 @@ try:
 
 except Exception as e:
     print(str(e))
-    client.send( str('{}:Disconnect from {}'.format(client.getsockname(),str(e))).encode('utf-8'))
+    client.send( str('{}:Disconnect from {}'.format(client.getsockname(),str(e))).encode('ascii'))
     client.close()
     exit(1)
