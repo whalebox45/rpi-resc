@@ -67,7 +67,7 @@ def receive():
 def write():
     while True:
         try:
-            message = input()
+            message = str("Server:") + input()
             broadcast(message.encode('utf-8'))
         except Exception as e:
             print(str(e))
