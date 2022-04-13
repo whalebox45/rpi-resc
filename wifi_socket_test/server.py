@@ -30,8 +30,8 @@ def handle(client):
         try:
             message = client.recv(1024)
             message_str = message.decode('ascii')
-            print(message_str)
-            broadcast(message_str)
+            # print(message_str)
+            # broadcast(message_str)
         except Exception as e:
             print('{} is Disconnected from {}'.format(client.getsockname(),str(e)))
             clients_list.remove(client)
