@@ -51,6 +51,6 @@ try:
 
 except Exception as e:
     print(str(e))
-    client.send('{}:Disconnect from {}'.format(client.getsockname(),str(e)))
+    client.send( str('{}:Disconnect from {}'.format(client.getsockname(),str(e))).encode('utf-8'))
     client.close()
     exit(1)
