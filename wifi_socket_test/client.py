@@ -28,7 +28,7 @@ def receive():
 def write():
     while True:
         try:
-            message = '{}({}): {}'.format(nickname,str(client.getsockname()), input(''))
+            message = '{} ({}): {}'.format(nickname,str(client.getsockname()), input(''))
             client.send(message.encode('utf-8'))
         except Exception as e:
             print(str(e))
@@ -48,6 +48,7 @@ try:
         pass
 
 except Exception as e:
+    print(str(e))
     client.send('{}:Disconnect'.format(client.getsockname()))
     client.close()
     exit(1)
