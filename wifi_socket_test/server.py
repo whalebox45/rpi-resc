@@ -20,8 +20,6 @@ server.listen()
 
 clients_list = []
 
-class DisconnectSignal(Exception):
-    pass
 
 def broadcast(message):
     for client in clients_list:

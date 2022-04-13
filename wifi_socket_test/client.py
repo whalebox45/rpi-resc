@@ -31,7 +31,7 @@ def write():
             message_input = input('')
             message = '{} ({}): {}'.format(nickname,str(client.getsockname()), message_input)
             # client.send(message.encode('utf-8'))
-            client.send("test".encode())
+            client.send(bytes('test'))
         except Exception as e:
             print(str(e))
             client.close()
@@ -51,6 +51,7 @@ try:
 
 except Exception as e:
     print(str(e))
-    client.send( str('{}:Disconnect from {}'.format(client.getsockname(),str(e))).encode())
+    # client.send('{}:Disconnect from {}'.format(client.getsockname(),str(e))).encode()
+    client.send(bytes('except'))
     client.close()
     exit(1)
