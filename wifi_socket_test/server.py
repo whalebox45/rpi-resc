@@ -31,7 +31,7 @@ def handle(client):
         try:
             message = client.recv(1024)
             message_str = message.decode('utf-8')
-            if message_str == '{}:Disconnect'.format(client)):
+            if message_str == '{}:Disconnect'.format(client):
                 raise Exception
             print(message_str)
 
