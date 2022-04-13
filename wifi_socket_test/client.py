@@ -35,12 +35,18 @@ def write():
             client.close()
             return
 
+receive_thread = threading.Thread(target=receive)
+receive_thread.setDaemon(True)
+write_thread = threading.Thread(target=write)
+write_thread.setDaemon(True)
+
 
 try:
-    receive_thread = threading.Thread(target=receive)
     receive_thread.start()
-    write_thread = threading.Thread(target=write)
     write_thread.start()
+    while True:
+        pass
+
 except Exception as e:
     client.send('{}:Disconnect'.format(client.getsockname()))
     client.close()
