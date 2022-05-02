@@ -28,7 +28,7 @@ def recv_udp():
             clients_list.append(addr)
 
         for addr in clients_list:
-            server_sock.sendto(message_recv.decode())
+            server_sock.sendto(message_recv.decode(), addr)
 
         print(message_recv.decode())
 
