@@ -21,7 +21,7 @@ def write_udp():
     while True:
         message_send = input()
         if message_send == 'exit':
-            break
+            return
         client_sock.sendto(message_send.encode(), server_addr)
 
 def recv_udp():
@@ -31,22 +31,16 @@ def recv_udp():
 
 
 
-
-# receive_thread = threading.Thread(target=receive)
-# receive_thread.setDaemon(True)
-# write_thread = threading.Thread(target=write)
-# write_thread.setDaemon(True)
+recv_udp_thread = threading.Thread(target=recv_udp)
+write_udp_thread = threading.Thread(target=write_udp)
 
 
 try:
-    # receive_thread.start()
-    # write_thread.start()
+    recv_udp_thread.start()
+    write_udp_thread.start()
     while True:
         pass
 
 except Exception as e:
     print(str(e))
-    # client_sock.send('{}:Disconnect from {}'.format(client_sock.getsockname(),str(e))).encode()
-    # client_sock.send(bytes('except'))
-    # client_sock.close()
     exit(1)
