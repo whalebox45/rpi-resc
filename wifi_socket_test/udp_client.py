@@ -11,7 +11,7 @@ PORT = 7976
 
 server_addr = (HOST, PORT)
 
-nickname = input("Choose your nickname: ")
+# nickname = input("Choose your nickname: ")
 
 client_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 # client_sock.connect((HOST, PORT))

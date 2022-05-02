@@ -1,6 +1,4 @@
-import socket, threading
-import argparse
-
+import socket, threading, argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-a","--address",dest='address',action="store",type=str)
@@ -35,13 +33,20 @@ def recv_udp():
 
 def write_udp():
     while True:
+        message_send = input()
+        if message_send == 'exit':
+            return
+        for addr in clients_list:
+            server_sock.sendto(message_send.encode(), addr)
         pass
 
 
 recv_udp_thread = threading.Thread(target=recv_udp)
+write_udp_thread = threading.Thread(target=write_udp)
 
 try:
     recv_udp_thread.start()
+    write_udp_thread.start()
     while True:
         pass
 
