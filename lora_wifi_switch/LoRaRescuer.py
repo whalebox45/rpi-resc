@@ -54,7 +54,7 @@ class LoRaRescuer(LoRa):
 
         print(f"\ntx #{self.tx_counter}: {transmit_str}")
 
-        data = [int(ord(c), 0) for c in transmit_str]
+        data = [ord(c) for c in transmit_str]
 
         self.write_payload(data)
         BOARD.led_on()
