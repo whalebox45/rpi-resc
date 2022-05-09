@@ -32,7 +32,7 @@ class LoRaRescuer(LoRa):
         print("\nRxDone")
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
-        data = [chr(hex(c)) for c in payload]
+        data = [chr(c) for c in payload]
         # print(payload)
         print(data)
  
@@ -54,7 +54,7 @@ class LoRaRescuer(LoRa):
 
         print(f"\ntx #{self.tx_counter}: {transmit_str}")
 
-        data = [int(hex(ord(c)), 0) for c in transmit_str]
+        data = [int(ord(c), 0) for c in transmit_str]
 
         self.write_payload(data)
         BOARD.led_on()
