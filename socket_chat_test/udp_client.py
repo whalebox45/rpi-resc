@@ -24,7 +24,7 @@ def Connect2Server():
 
 print("Client - Main thread started")  
 ThreadList  = []
-ThreadCount = 20
+ThreadCount = 5
 # Create as many connections as defined by ThreadCount
 for index in range(ThreadCount):
     ThreadInstance = threading.Thread(target=Connect2Server())

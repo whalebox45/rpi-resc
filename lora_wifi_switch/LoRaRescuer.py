@@ -88,14 +88,6 @@ class LoRaRescuer(LoRa):
 
             self.set_mode(MODE.SLEEP)
             sleep(1)
-            
-            self.rescuer_data = dict(
-                {
-                    "Hostname": get_hostname(),
-                    "SerialNo.": get_serial(),
-                    "MACAddress": get_mac_address(),
-                }
-            )
 
             print("\nTX mode")
             self.set_dio_mapping([1,0,0,0,0,0])
