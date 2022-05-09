@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from time import sleep, time
+import time
 from random import randrange
 
 import sys
@@ -59,7 +59,7 @@ class LoRaRescuer(LoRa):
         self.write_payload(data)
         BOARD.led_on()
         self.set_mode(MODE.TX)
-        sleep(0.25)
+        time.sleep(0.25)
 
     def start(self):
         
@@ -83,17 +83,17 @@ class LoRaRescuer(LoRa):
                 status = self.get_modem_status()
                 sys.stdout.flush()
                 sys.stdout.write("\r%d %d %d" % (rssi_value, status['rx_ongoing'], status['modem_clear']))
-                # sleep(0.1)
+                
                 t_end = time.time()
 
             self.set_mode(MODE.SLEEP)
-            sleep(1)
+            time.sleep(1)
 
             print("\nTX mode")
             self.set_dio_mapping([1,0,0,0,0,0])
             self.set_mode(MODE.TX)
             
-            sleep(6)
+            time.sleep(6)
             self.reset_ptr_rx()
  
     
