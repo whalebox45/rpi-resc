@@ -32,7 +32,7 @@ class LoRaRescuer(LoRa):
         print("\nRxDone")
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
-        data = [ord(c) for c in payload]
+        data = [chr(hex(c)) for c in payload]
         # print(payload)
         print(data)
  
