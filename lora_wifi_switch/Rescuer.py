@@ -30,6 +30,9 @@ assert(lora.get_agc_auto_on() == 1)
 
 payload_length = lora.get_payload_length()
 
+
+
+
 try:
     lora.start()
 except KeyboardInterrupt:

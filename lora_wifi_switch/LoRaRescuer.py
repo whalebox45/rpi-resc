@@ -9,16 +9,15 @@ from SX127x.LoRa import *
 
 from SystemInfo import get_serial, get_mac_address, get_hostname
 
+rescuer_data = dict({
+    "Hostname": get_hostname(),
+    "SerialNo.": get_serial(),
+    "MACAddress": get_mac_address()
+    }
+)
+
 
 class LoRaRescuer(LoRa):
-
-    rescuer_data = dict(
-        {
-            "Hostname": get_hostname(),
-            "SerialNo.": get_serial(),
-            "MACAddress": get_mac_address()
-        }
-    )
 
     def __init__(self, verbose=False):
         super(LoRaRescuer, self).__init__(verbose)
@@ -35,7 +34,7 @@ class LoRaRescuer(LoRa):
         data = ''.join([chr(c) for c in payload])
         
         # print(payload)
-        print(data)
+        print(f'\n{data}')
  
         self.reset_ptr_rx()
         BOARD.led_off()
@@ -51,7 +50,7 @@ class LoRaRescuer(LoRa):
         BOARD.led_off()
         
         
-        transmit_str = f'{self.rescuer_data}'
+        transmit_str = f'{rescuer_data}'
 
         print(f"\ntx #{self.tx_counter}: {transmit_str}")
 
@@ -72,13 +71,15 @@ class LoRaRescuer(LoRa):
 
             self.set_dio_mapping([0,0,0,0,0,0])
             self.set_mode(MODE.RXCONT)
+            
+            # Start RX mode
             print("\nRX mode")
 
             t_start = time.time()
             t_end = time.time()
-
             rx_time = randrange(5,11)
 
+            # RX mode in 5~11 seconds
             while t_end - t_start <= rx_time:
                 rssi_value = self.get_rssi_value()
                 status = self.get_modem_status()
@@ -87,14 +88,14 @@ class LoRaRescuer(LoRa):
                 
                 t_end = time.time()
 
+
+            # Sleep 1 second and switch to TX mode
             self.set_mode(MODE.SLEEP)
             time.sleep(1)
-
             print("\nTX mode")
             self.set_dio_mapping([1,0,0,0,0,0])
             self.set_mode(MODE.TX)
             
+            # TX mode in 6 seconds
             time.sleep(6)
             self.reset_ptr_rx()
- 
-    
