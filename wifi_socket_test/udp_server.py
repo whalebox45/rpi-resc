@@ -1,6 +1,4 @@
-import socket, threading
-import argparse
-
+import socket, threading, argparse
 
 parser = argparse.ArgumentParser()
 parser.add_argument("-a","--address",dest='address',action="store",type=str)
@@ -15,7 +13,7 @@ PORT = 7976
 server_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 # server_sock.settimeout(3)
 server_sock.bind((HOST, PORT))
-# server_sock.listen()
+
 
 
 clients_list = []
@@ -27,4 +25,31 @@ def recv_udp():
         if addr not in clients_list:
             clients_list.append(addr)
 
+        for addr in clients_list:
+            server_sock.sendto(message_recv, addr)
+
         print(message_recv.decode())
+
+
+def write_udp():
+    while True:
+        message_send = input()
+        if message_send == 'exit':
+            return
+        for addr in clients_list:
+            server_sock.sendto(message_send.encode(), addr)
+        pass
+
+
+recv_udp_thread = threading.Thread(target=recv_udp)
+write_udp_thread = threading.Thread(target=write_udp)
+
+try:
+    recv_udp_thread.start()
+    write_udp_thread.start()
+    while True:
+        pass
+
+except Exception as e:
+    print(str(e))
+    exit(1)

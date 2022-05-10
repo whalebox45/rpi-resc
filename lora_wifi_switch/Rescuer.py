@@ -1,7 +1,9 @@
-import LoRaRescuer
 from SX127x.LoRa import *
 from SX127x.board_config import BOARD
 from SX127x.LoRaArgumentParser import LoRaArgumentParser
+
+from LoRaRescuer import LoRaRescuer
+
 import sys
 
 
@@ -27,6 +29,9 @@ print(lora)
 assert(lora.get_agc_auto_on() == 1)
 
 payload_length = lora.get_payload_length()
+
+
+
 
 try:
     lora.start()
