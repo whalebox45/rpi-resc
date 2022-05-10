@@ -61,41 +61,41 @@ class LoRaRescuer(LoRa):
         self.set_mode(MODE.TX)
         time.sleep(0.25)
 
-    def start(self):
+def lora_start(lora:LoRa):
+    
+    lora.tx_counter = 0
+    lora.reset_ptr_rx()
+    while True:
         
-        self.tx_counter = 0
-        self.reset_ptr_rx()
-        while True:
-            
-            self.set_mode(MODE.STDBY)
+        lora.set_mode(MODE.STDBY)
 
-            self.set_dio_mapping([0,0,0,0,0,0])
-            self.set_mode(MODE.RXCONT)
-            
-            # Start RX mode
-            print("\nRX mode")
+        lora.set_dio_mapping([0,0,0,0,0,0])
+        lora.set_mode(MODE.RXCONT)
+        
+        # Start RX mode
+        print("\nRX mode")
 
-            t_start = time.time()
+        t_start = time.time()
+        t_end = time.time()
+        rx_time = randrange(5,11)
+
+        # RX mode in 5~11 seconds
+        while t_end - t_start <= rx_time:
+            rssi_value = lora.get_rssi_value()
+            status = lora.get_modem_status()
+            sys.stdout.flush()
+            sys.stdout.write("\r%d %d %d" % (rssi_value, status['rx_ongoing'], status['modem_clear']))
+            
             t_end = time.time()
-            rx_time = randrange(5,11)
-
-            # RX mode in 5~11 seconds
-            while t_end - t_start <= rx_time:
-                rssi_value = self.get_rssi_value()
-                status = self.get_modem_status()
-                sys.stdout.flush()
-                sys.stdout.write("\r%d %d %d" % (rssi_value, status['rx_ongoing'], status['modem_clear']))
-                
-                t_end = time.time()
 
 
-            # Sleep 1 second and switch to TX mode
-            self.set_mode(MODE.SLEEP)
-            time.sleep(1)
-            print("\nTX mode")
-            self.set_dio_mapping([1,0,0,0,0,0])
-            self.set_mode(MODE.TX)
-            
-            # TX mode in 6 seconds
-            time.sleep(6)
-            self.reset_ptr_rx()
+        # Sleep 1 second and switch to TX mode
+        lora.set_mode(MODE.SLEEP)
+        time.sleep(1)
+        print("\nTX mode")
+        lora.set_dio_mapping([1,0,0,0,0,0])
+        lora.set_mode(MODE.TX)
+        
+        # TX mode in 6 seconds
+        time.sleep(6)
+        lora.reset_ptr_rx()
