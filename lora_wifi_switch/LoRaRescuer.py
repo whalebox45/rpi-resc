@@ -26,12 +26,16 @@ class LoRaSignalMode(Enum):
 
 class LoRaRescuer(LoRa):
 
-    mode_switch = LoRaSignalMode.blank
+    
 
     def __init__(self, verbose=False):
         super(LoRaRescuer, self).__init__(verbose)
+
+        self.mode_switch = LoRaSignalMode.blank
+        
         self.set_mode(MODE.SLEEP)
         self.set_dio_mapping([0,0,0,0,0,0])
+
         self.tx_counter = 0
         self.reset_ptr_rx()
         
