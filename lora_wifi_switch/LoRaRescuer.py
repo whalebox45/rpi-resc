@@ -83,7 +83,7 @@ class LoRaRescuer(LoRa):
 
 
 
-def lora_receive(lora:LoRaRescuer):
+def lora_receive(lora:LoRaRescuer,verbose=False):
 
     lora.reset_ptr_rx()
     lora.set_mode(MODE.STDBY)
@@ -94,10 +94,12 @@ def lora_receive(lora:LoRaRescuer):
 
     # Keep in receive mode when it's not switched
     while lora.mode_switch is LoRaSignalMode.rx:
-        rssi_value = lora.get_rssi_value()
-        status = lora.get_modem_status()
-        sys.stdout.flush()
-        sys.stdout.write("\r%d %d %d" % (rssi_value, status['rx_ongoing'], status['modem_clear']))
+        
+        if verbose:
+            rssi_value = lora.get_rssi_value()
+            status = lora.get_modem_status()
+            sys.stdout.flush()
+            sys.stdout.write("\r%d %d %d" % (rssi_value, status['rx_ongoing'], status['modem_clear']))
         
 
     # Sleep 1 second
