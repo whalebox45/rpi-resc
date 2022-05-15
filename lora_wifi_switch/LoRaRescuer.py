@@ -43,8 +43,8 @@ class LoRaRescuer(LoRa):
         
 
     def on_rx_done(self):
-        # self.set_mode(MODE.STDBY)
-        BOARD.led_on()
+        self.set_mode(MODE.RXCONT)
+        # BOARD.led_on()
         print("\nRxDone")
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
@@ -54,9 +54,9 @@ class LoRaRescuer(LoRa):
         self.rx_string = data
         print(self.rx_string)
 
-        self.reset_ptr_rx()
+        # self.reset_ptr_rx()
         BOARD.led_off()
-        self.set_mode(MODE.RXCONT)
+        self.set_mode(MODE.STDBY)
 
     def on_tx_done(self):
         
@@ -65,7 +65,7 @@ class LoRaRescuer(LoRa):
         
         
         
-        BOARD.led_off()
+        # BOARD.led_off()
         
         
         transmit_str = f'{rescuer_data}'
@@ -75,7 +75,7 @@ class LoRaRescuer(LoRa):
         data = [ord(c) for c in transmit_str]
 
         self.write_payload(data)
-        BOARD.led_on()
+        # BOARD.led_on()
         self.set_mode(MODE.TX)
         time.sleep(1)
 
@@ -104,7 +104,7 @@ def lora_receive(lora:LoRaRescuer,verbose=False):
 
     # Sleep 1 second
     lora.set_mode(MODE.SLEEP)
-    time.sleep(1)
+    time.sleep(0.5)
 
 
 
@@ -126,4 +126,4 @@ def lora_transmit(lora:LoRaRescuer):
 
     # Sleep 1 second
     lora.set_mode(MODE.SLEEP)
-    time.sleep(1)
+    time.sleep(0.5)
