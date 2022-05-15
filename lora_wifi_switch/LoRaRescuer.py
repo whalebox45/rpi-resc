@@ -26,22 +26,24 @@ class LoRaSignalMode(Enum):
 
 class LoRaRescuer(LoRa):
 
-    
+    tx_string = str("")
+    rx_string = str("")
 
     def __init__(self, verbose=False):
         super(LoRaRescuer, self).__init__(verbose)
 
         self.mode_switch = LoRaSignalMode.blank
+        self.transmit_str = str("")
         
         self.set_mode(MODE.SLEEP)
         self.set_dio_mapping([0,0,0,0,0,0])
 
-        self.tx_counter = 0
+        
         self.reset_ptr_rx()
         
 
     def on_rx_done(self):
-        self.set_mode(MODE.STDBY)
+        # self.set_mode(MODE.STDBY)
         BOARD.led_on()
         print("\nRxDone")
         self.clear_irq_flags(RxDone=1)
@@ -49,82 +51,39 @@ class LoRaRescuer(LoRa):
         data = ''.join([chr(c) for c in payload])
         
         # print(payload)
-        print(f'\n{data}')
- 
+        self.rx_string = data
+        print(self.rx_string)
+
         self.reset_ptr_rx()
         BOARD.led_off()
         self.set_mode(MODE.RXCONT)
 
     def on_tx_done(self):
         
-        self.set_mode(MODE.STDBY)
+        # self.set_mode(MODE.STDBY)
         self.clear_irq_flags(TxDone=1)
         
-        self.tx_counter += 1
+        
         
         BOARD.led_off()
         
         
         transmit_str = f'{rescuer_data}'
 
-        print(f"\ntx #{self.tx_counter}: {transmit_str}")
+        print(f"\n{transmit_str}")
 
         data = [ord(c) for c in transmit_str]
 
         self.write_payload(data)
         BOARD.led_on()
         self.set_mode(MODE.TX)
-        time.sleep(0.25)
+        time.sleep(0.5)
 
 
 
 
 
-
-
-def lora_start(lora:LoRa):
-    while True:
-        
-        lora.set_mode(MODE.STDBY)
-
-        lora.set_dio_mapping([0,0,0,0,0,0])
-        lora.set_mode(MODE.RXCONT)
-        
-        # Start RX mode
-        print("\nRX mode")
-
-        t_start = time.time()
-        t_end = time.time()
-        rx_time = randrange(5,11)
-
-        # RX mode in [5,11) seconds
-        while t_end - t_start <= rx_time:
-            rssi_value = lora.get_rssi_value()
-            status = lora.get_modem_status()
-            sys.stdout.flush()
-            sys.stdout.write("\r%d %d %d" % (rssi_value, status['rx_ongoing'], status['modem_clear']))
-            
-            t_end = time.time()
-
-
-        # Sleep 1 second and switch to TX mode
-        lora.set_mode(MODE.SLEEP)
-        time.sleep(1)
-        print("\nTX mode")
-        lora.set_dio_mapping([1,0,0,0,0,0])
-        lora.set_mode(MODE.TX)
-        
-        # TX mode in 6 seconds
-        time.sleep(6)
-        lora.reset_ptr_rx()
-
-
-
-
-
-
-
-def lora_transmit(lora:LoRaRescuer):
+def lora_receive(lora:LoRaRescuer):
 
     lora.reset_ptr_rx()
     lora.set_mode(MODE.STDBY)
@@ -150,8 +109,7 @@ def lora_transmit(lora:LoRaRescuer):
 
 
 
-
-def lora_receive(lora:LoRaRescuer):
+def lora_transmit(lora:LoRaRescuer):
     lora.set_mode(MODE.STDBY)
     lora.set_dio_mapping([1,0,0,0,0,0])
     lora.set_mode(MODE.TX)
