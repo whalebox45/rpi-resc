@@ -32,9 +32,9 @@ receive_counter = 0
 def TimerControl():
     while True:
         lora.mode_switch = LoRaSignalMode.rx
-        time.sleep(5)
+        time.sleep(10)
         lora.mode_switch = LoRaSignalMode.tx
-        time.sleep(5)
+        time.sleep(10)
 
 timer_control_thread = threading.Thread(target=TimerControl)
 timer_control_thread.setDaemon(True)        

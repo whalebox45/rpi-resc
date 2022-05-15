@@ -77,7 +77,7 @@ class LoRaRescuer(LoRa):
         self.write_payload(data)
         BOARD.led_on()
         self.set_mode(MODE.TX)
-        time.sleep(0.5)
+        time.sleep(1)
 
 
 
@@ -94,7 +94,7 @@ def lora_receive(lora:LoRaRescuer,verbose=False):
 
     # Keep in receive mode when it's not switched
     while lora.mode_switch is LoRaSignalMode.rx:
-        
+
         if verbose:
             rssi_value = lora.get_rssi_value()
             status = lora.get_modem_status()
