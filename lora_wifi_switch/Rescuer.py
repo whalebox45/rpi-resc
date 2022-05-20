@@ -1,6 +1,8 @@
+from enum import Enum, unique
 import sys
 import threading
 import time
+
 
 from SX127x.LoRa import *
 from SX127x.board_config import BOARD
@@ -29,12 +31,26 @@ receive_counter = 0
     收發模式切換
     TODO 當接收到切換模式的訊號資料時切換至該模式
 '''
+
+@unique
+class RescuerMode(Enum):
+    blank = 0
+    lora = 1
+    wifi = 2
+
+current_mode = RescuerMode.lora
+
+
 def TimerControl():
-    while True:
-        lora.mode_switch = LoRaSignalMode.rx
-        time.sleep(10)
-        lora.mode_switch = LoRaSignalMode.tx
-        time.sleep(10)
+    if current_mode == RescuerMode.lora:
+        while True:
+            lora.mode_switch = LoRaSignalMode.rx
+            time.sleep(10)
+            lora.mode_switch = LoRaSignalMode.tx
+            time.sleep(10)
+
+
+
 
 timer_control_thread = threading.Thread(target=TimerControl)
 timer_control_thread.setDaemon(True)        
