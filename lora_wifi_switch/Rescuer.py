@@ -37,9 +37,6 @@ lora.set_freq(433)
 print(lora)
 assert(lora.get_agc_auto_on() == 1)
 
-<<<<<<< HEAD
-payload_length = lora.get_payload_length()
-=======
 receive_counter = 0
 
 '''
@@ -61,9 +58,9 @@ def TimerControl():
     if current_mode == RescuerMode.lora:
         while True:
             lora.mode_switch = LoRaSignalMode.rx
-            time.sleep(10)
+            time.sleep(5)
             lora.mode_switch = LoRaSignalMode.tx
-            time.sleep(10)
+            time.sleep(5)
 
 
 
@@ -89,7 +86,6 @@ timer_control_thread.setDaemon(True)
 
 
 
->>>>>>> 042d98e237ad844265bb18d496c9defcda95c8d8
 
 
 
