@@ -1,12 +1,9 @@
-<<<<<<< HEAD
-=======
 from enum import Enum, unique
 import sys
 import threading
 import time
 
 
->>>>>>> 042d98e237ad844265bb18d496c9defcda95c8d8
 from SX127x.LoRa import *
 from SX127x.board_config import BOARD
 from SX127x.LoRaArgumentParser import LoRaArgumentParser
