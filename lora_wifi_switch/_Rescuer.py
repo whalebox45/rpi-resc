@@ -16,7 +16,7 @@ import sys
 BOARD.setup()
 parser = LoRaArgumentParser("Continous LoRa receiver.")
 
-lora = LoRaRescuer(verbose=False)
+lora = LoRaRescuer()
 args = parser.parse_args(lora)
 
 lora.set_mode(MODE.STDBY)
