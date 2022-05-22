@@ -50,21 +50,6 @@ class RescuerMode(Enum):
 
 current_mode = RescuerMode.lora
 
-
-def TimerControl():
-    if current_mode == RescuerMode.lora:
-        while True:
-            lora.mode_switch = LoRaSignalMode.rx
-            time.sleep(5)
-            lora.mode_switch = LoRaSignalMode.tx
-            time.sleep(5)
-
-
-
-
-timer_control_thread = threading.Thread(target=TimerControl)
-timer_control_thread.setDaemon(True)        
-
 '''
     TODO 需要一個自動開啟和關閉WiFi連線的方法
 '''
