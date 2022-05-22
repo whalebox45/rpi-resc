@@ -76,7 +76,7 @@ def timer():
     while True:
         global current_time
         current_time = datetime.datetime.now()
-        print(datetime.datetime.time(y))
+        print(datetime.datetime.time(current_time))
         time.sleep(0.5)
             
 

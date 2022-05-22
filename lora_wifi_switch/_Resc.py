@@ -8,7 +8,7 @@ from SX127x.LoRa import *
 from SX127x.board_config import BOARD
 from SX127x.LoRaArgumentParser import LoRaArgumentParser
 
-from lora_wifi_switch._LoRaRescuer import LoRaRescuer, lora_start
+from lora_wifi_switch._LoRaRes import LoRaRescuer, lora_start
 
 import sys
 
