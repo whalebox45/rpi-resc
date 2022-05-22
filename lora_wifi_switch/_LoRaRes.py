@@ -35,7 +35,7 @@ class LoRaRescuer(LoRa):
         # print(payload)
         print(f'\n{data}')
  
-        self.reset_ptr_rx()
+        # self.reset_ptr_rx()
         BOARD.led_off()
         # self.set_mode(MODE.RXCONT)
 
