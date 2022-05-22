@@ -18,7 +18,7 @@ def lora_setup():
     parser = LoRaArgumentParser("Continous LoRa receiver.")
 
     global lora
-    lora = LoraRescuer(verbose=False)  
+    lora = LoraRescuer()  
 
     args = parser.parse_args(lora)
 
