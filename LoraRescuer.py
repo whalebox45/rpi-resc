@@ -28,7 +28,7 @@ class LoraRescuer(LoRa):
 
         print(self.rx_data)
 
-        self.set_mode(MODE.STDBY)
+        # self.set_mode(MODE.STDBY)
     
     
     '''
