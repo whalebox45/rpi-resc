@@ -97,7 +97,7 @@ def main():
             rd = lora.rx_data
             jrx = json.loads(rd.replace("\'", "\""))
             ser = jrx['MessageID']
-            print(ser)
+            print(f'messageid: {ser}')
         except json.JSONDecodeError as jse:
             jrx = stored_msg
             pass
