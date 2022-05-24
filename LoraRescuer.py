@@ -37,7 +37,7 @@ class LoraRescuer(LoRa):
     def on_tx_done(self):
         self.clear_irq_flags(TxDone=1)
 
-        self.write_payload(self.tx_data)
+        self.write_payload([ord(c) for c in self.tx_data])
         self.set_mode(MODE.TX)
         time.sleep(1)
         
