@@ -44,8 +44,8 @@ def lora_rx(lora:LoraRescuer):
     lora.set_mode(MODE.RXCONT)
 
     # Sleep
-    lora.set_mode(MODE.SLEEP)
-    time.sleep(0.5)
+    # lora.set_mode(MODE.SLEEP)
+    time.sleep(5)
 
 def lora_tx(lora:LoraRescuer,message:str):
     lora.tx_data = message
