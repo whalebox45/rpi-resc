@@ -93,7 +93,7 @@ def main():
         if True:
         # if get_message_in10sec:
             rx_counter += 1
-            lora_tx(lora,MessageFormat())
+            lora_tx(lora,str(MessageFormat()))
 
         '''
             如果在規定時間內都沒有收到LoRa訊息，就重設計數器數值
