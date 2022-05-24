@@ -93,7 +93,9 @@ def main():
 
         fetched_time = current_time
         try:
-            jrx = json.loads(lora.rx_data)
+            rd = lora.rx_data
+            rd = rd.replace("\'", "\"")
+            jrx = json.loads(rd)
             ser = jrx['MessageID']
             print(ser)
         except Exception as e:
