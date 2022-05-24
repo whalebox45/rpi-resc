@@ -85,6 +85,7 @@ def timer():
 
 def main():
     global current_mode, rx_counter, current_time
+    stored_msg = object()
     while current_mode == RescuerMode.LORA:
         lora_rx(lora)
         '''
@@ -94,17 +95,22 @@ def main():
         fetched_time = current_time
         try:
             rd = lora.rx_data
-            rd = rd.replace("\'", "\"")
-            jrx = json.loads(rd)
+            jrx = json.loads(rd.replace("\'", "\""))
             ser = jrx['MessageID']
             print(ser)
+        except json.JSONDecodeError as jse:
+            jrx = stored_msg
+            pass
         except Exception as e:
-            print(e)
+            jrx = stored_msg
+            pass
         
 
-        if True:
+        if stored_msg != jrx:
         # if get_message_in10sec:
+            stored_msg = jrx
             rx_counter += 1
+            print(f'rx_counter: {rx_counter}')
             lora_tx(lora,str(MessageFormat()))
 
         '''
