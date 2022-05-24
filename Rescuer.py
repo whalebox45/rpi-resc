@@ -68,11 +68,11 @@ class RescuerMode(Enum):
     DUAL = 1
 
 current_mode = RescuerMode.LORA
+current_time = datetime.datetime.now()
 
 rx_counter = 0
 
 
-current_time = datetime.datetime.now()
 def timer():
     while True:
         global current_time
@@ -84,7 +84,7 @@ def timer():
 
 
 def main():
-    global current_mode
+    global current_mode, rx_counter
     while current_mode == RescuerMode.LORA:
         lora_rx(lora)
         '''
