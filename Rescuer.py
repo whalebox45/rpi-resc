@@ -39,7 +39,6 @@ def lora_setup():
 def lora_rx(lora:LoraRescuer):
     """將LoRa設為MODE.RXCONT"""
     lora.reset_ptr_rx()
-    lora.set_mode(MODE.STDBY)
     lora.set_dio_mapping([0,0,0,0,0,0])
     lora.set_mode(MODE.RXCONT)
 
