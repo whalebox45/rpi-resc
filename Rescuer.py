@@ -3,6 +3,7 @@
 from enum import Enum, unique
 import threading
 import time, datetime
+import json
 
 from LoraRescuer import LoraRescuer
 
@@ -83,12 +84,22 @@ def timer():
 
 
 def main():
-    global current_mode, rx_counter
+    global current_mode, rx_counter, current_time
     while current_mode == RescuerMode.LORA:
         lora_rx(lora)
         '''
             如果在規定時間內收到LoRa訊息，增加計數器數值，並且發送自身的LoRa訊息
         '''
+
+        fetched_time = current_time
+        try:
+            jrx = json.loads(lora.rx_data)
+            ser = jrx['MessageID']
+            print(ser)
+        except Exception as e:
+            print(e)
+        
+
         if True:
         # if get_message_in10sec:
             rx_counter += 1

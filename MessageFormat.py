@@ -1,7 +1,8 @@
+from re import L
 import uuid
 import socket
 
-
+MESSAGE_SERIAL = 0
 
 def get_cpuid():
     cpuserial = "000000000000000"
@@ -26,17 +27,24 @@ def get_mac_address(hasColon=False):
 def get_hostname():
     return socket.gethostname()
 
+def get_serial():
+    global MESSAGE_SERIAL
+    MESSAGE_SERIAL+= 1
+    return MESSAGE_SERIAL
+
 class MessageFormat():
     def __init__(self):
         self.cpuid = get_cpuid()
         self.macaddr = get_mac_address()
         self.hostname = get_hostname()
+        self.serial = get_serial()
     
     def __str__(self):
         data_dict = dict({
-            "Hostname": self.cpuid,
-            "SerialNo.": self.macaddr,
-            "MACAddress": self.hostname
+            "MessageID": self.serial,
+            "CPUSerial": self.cpuid,
+            "MACAddr": self.macaddr,
+            "Hostname": self.hostname
         })
         return str(data_dict)
 
