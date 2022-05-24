@@ -135,7 +135,9 @@ lora_setup()
 timer_thread = threading.Thread(target=timer)
 timer_thread.setDaemon(True)
 
-try:
+time.sleep(3)
+
+try:  
     main()
 except KeyboardInterrupt as ke:
     sys.stderr.write(ke)

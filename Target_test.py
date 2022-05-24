@@ -73,6 +73,8 @@ def main():
 
 lora_setup()
 
+time.sleep(3)
+
 try:
     main()
 except KeyboardInterrupt as ke:

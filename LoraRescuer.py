@@ -20,13 +20,16 @@ class LoraRescuer(LoRa):
         當LoRa模式設為RXCONT時便會反覆執行這個方法
     '''
     def on_rx_done(self):
+        self.reset_ptr_rx()
         self.set_mode(MODE.RXCONT)
-
+        
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
         self.rx_data = ''.join([chr(c) for c in payload])
 
         print(f'RX: {self.rx_data}')
+
+        
 
         # self.set_mode(MODE.STDBY)
     
