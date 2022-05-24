@@ -54,11 +54,12 @@ def lora_tx(lora:LoraRescuer,message:str):
     lora.set_dio_mapping([1,0,0,0,0,0])
     lora.set_mode(MODE.TX)
 
-    lora.reset_ptr_rx()
-
+    
+    time.sleep(5)
     # Sleep
+    
     lora.set_mode(MODE.SLEEP)
-    time.sleep(0.5)
+    lora.reset_ptr_rx()
 
 
 @unique
