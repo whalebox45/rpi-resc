@@ -11,7 +11,7 @@ from SX127x.LoRa import *
 from SX127x.board_config import BOARD
 from SX127x.LoRaArgumentParser import LoRaArgumentParser
 
-def lora_setup()
+def lora_setup():
     """LoRa 模組設置"""
     BOARD.setup()
     parser = LoRaArgumentParser("Continuous LoRa receiver")
