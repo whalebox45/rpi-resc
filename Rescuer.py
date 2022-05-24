@@ -16,7 +16,7 @@ from SX127x.LoRaArgumentParser import LoRaArgumentParser
 def lora_setup():
     """LoRa 模組設置"""
     BOARD.setup()
-    parser = LoRaArgumentParser("Continous LoRa receiver.")
+    parser = LoRaArgumentParser("Continuous LoRa receiver.")
 
     global lora
     lora = LoraRescuer()  
@@ -58,7 +58,7 @@ def lora_tx(lora:LoraRescuer,message:str):
     time.sleep(5)
     # Sleep
     
-    lora.set_mode(MODE.SLEEP)
+    # lora.set_mode(MODE.SLEEP)
     # lora.reset_ptr_rx()
 
 
@@ -77,7 +77,7 @@ def timer():
     while True:
         global current_time
         current_time = datetime.datetime.now()
-        print(datetime.datetime.time(current_time))
+        # print(datetime.datetime.time(current_time))
         time.sleep(0.5)
             
 
@@ -114,14 +114,14 @@ def main():
             lora_tx(lora,str(MessageFormat()))
 
         '''
-            如果在規定時間內都沒有收到LoRa訊息，就重設計數器數值
+            TODO 如果在規定時間內都沒有收到LoRa訊息，就重設計數器數值
         '''
         
         # if lost_message_in10sec:
         #     rx_counter = 0
         
         '''
-            如果計數器數值數值足夠大就切換至 DUAL 模式
+            TODO 如果計數器數值數值足夠大就切換至 DUAL 模式
         '''
         if rx_counter >= 5:
             current_mode = RescuerMode.DUAL
