@@ -84,6 +84,7 @@ def timer():
 
 
 def main():
+    global current_mode
     while current_mode == RescuerMode.LORA:
         lora_rx(lora)
         '''
