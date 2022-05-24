@@ -26,7 +26,7 @@ class LoraRescuer(LoRa):
         payload = self.read_payload(nocheck=True)
         self.rx_data = ''.join([chr(c) for c in payload])
 
-        print("ok")
+        print(self.rx_data)
 
         # self.set_mode(MODE.STDBY)
     
