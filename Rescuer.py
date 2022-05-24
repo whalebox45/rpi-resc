@@ -94,7 +94,7 @@ def main():
         fetched_time = current_time
         try:
             jrx = json.loads(lora.rx_data)
-            ser = jrx['MessageID']
+            ser = jrx["MessageID"]
             print(ser)
         except Exception as e:
             print(e)
