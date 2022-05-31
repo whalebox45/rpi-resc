@@ -7,21 +7,77 @@ import json
 
 from LoraRescuer import LoraRescuer
 
+import socket
+
+
 from MessageFormat import MessageFormat
 
 from SX127x.LoRa import *
 from SX127x.board_config import BOARD
 from SX127x.LoRaArgumentParser import LoRaArgumentParser
 
+import argparse
+
+argp = argparse.ArgumentParser()
+argp.add_argument("-w","--wifi",action="store_true")
+args = argp.parse_args()
+
+WIFI_SOCKET_TEST = False
+if args.wifi: WIFI_SOCKET_TEST = True
+
+
+
+
+
+
+
+
+
+SOCKET_HOST = '127.0.0.1'
+SOCKET_PORT = 8763
+sock_client_list = []
+
+def socket_setup():
+    """Socket伺服器設置"""
+    global server_sock
+    server_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    server_sock.bind((SOCKET_HOST,SOCKET_PORT))
+    print("socket start")
+
+def sock_recv_udp():
+    """Socket伺服器以udp接收"""
+    while True:
+        message_recv, addr = server_sock.recvfrom(1024)
+
+        if addr not in sock_client_list:
+            sock_client_list.append(addr)
+        
+        for addr in sock_client_list:
+            server_sock.sendto(message_recv, addr)
+        
+        print(message_recv.decode())
+
+def sock_write_udp():
+    """Socket伺服器以udp傳送"""
+    while True:
+        message_send = str(MessageFormat())
+        for addr in sock_client_list:
+            server_sock.sendto(message_send.encode(), addr)
+
+
+
+
+
+
 def lora_setup():
     """LoRa 模組設置"""
     BOARD.setup()
-    parser = LoRaArgumentParser("Continuous LoRa receiver.")
+    # parser = LoRaArgumentParser("Continuous LoRa receiver.")
 
     global lora
     lora = LoraRescuer()  
 
-    args = parser.parse_args(lora)
+    # args = parser.parse_args(lora)
 
     lora.set_mode(MODE.STDBY)
     lora.set_pa_config(pa_select=1)
@@ -29,10 +85,6 @@ def lora_setup():
     lora.set_freq(433)
     print(lora)
     assert(lora.get_agc_auto_on() == 1)
-
-
-
-
 
 
 
@@ -66,12 +118,19 @@ def lora_tx(lora:LoraRescuer,message:str):
 class RescuerMode(Enum):
     LORA = 0
     DUAL = 1
+    WIFI = 2
+
 
 current_mode = RescuerMode.LORA
+if WIFI_SOCKET_TEST: current_mode = RescuerMode.WIFI
+
+
+
+
 current_time = datetime.datetime.now()
 
-rx_counter = 0
-
+rx_ok_count = 0
+rx_fail_count = 0
 
 def timer():
     while True:
@@ -84,8 +143,11 @@ def timer():
 
 
 def main():
-    global current_mode, rx_counter, current_time
+    global current_mode, rx_ok_count, current_time
     stored_msg = object()
+
+
+
     while current_mode == RescuerMode.LORA:
         lora_rx(lora)
         '''
@@ -109,8 +171,8 @@ def main():
         if stored_msg != jrx:
         # if get_message_in10sec:
             stored_msg = jrx
-            rx_counter += 1
-            print(f'rx_counter: {rx_counter}')
+            rx_ok_count += 1
+            print(f'rx_ok_count: {rx_ok_count}')
             lora_tx(lora,str(MessageFormat()))
 
         '''
@@ -118,20 +180,35 @@ def main():
         '''
         
         # if lost_message_in10sec:
-        #     rx_counter = 0
+        #     rx_ok_count = 0
         
         '''
             TODO 如果計數器數值數值足夠大就切換至 DUAL 模式
         '''
-        if rx_counter >= 5:
+        if rx_ok_count >= 5:
             current_mode = RescuerMode.DUAL
             print('Change to DUAL Mode')
             current_mode = RescuerMode.LORA
-            rx_counter = 0
+            rx_ok_count = 0
+    
 
 
 
-lora_setup()
+
+    while current_mode == RescuerMode.DUAL:
+        pass
+
+
+
+    while current_mode == RescuerMode.WIFI:
+        pass
+
+
+
+
+if WIFI_SOCKET_TEST: socket_setup()
+else: lora_setup()
+
 timer_thread = threading.Thread(target=timer)
 timer_thread.setDaemon(True)
 
