@@ -15,8 +15,8 @@ from MessageFormat import MessageFormat
 from SX127x.LoRa import *
 from SX127x.board_config import BOARD
 from SX127x.LoRaArgumentParser import LoRaArgumentParser
-
-import argparse
+ 
+import argparse, configparser
 
 argp = argparse.ArgumentParser()
 argp.add_argument("-w","--wifi",action="store_true")
@@ -29,23 +29,31 @@ if args.wifi: WIFI_SOCKET_TEST = True
 
 
 
-
-
-
-
-SOCKET_HOST = '127.0.0.1'
-SOCKET_PORT = 8763
 sock_client_list = []
 
 def socket_setup():
-    """Socket伺服器設置"""
+    """Socket伺服器設置，讀取config檔案，若失敗則用hardcode"""
+    confp = configparser.ConfigParser()
+    confp.read('resc-wifi.conf')
+    try:   
+        SOCKET_HOST = confp['wifi']['host']
+    except:
+        SOCKET_HOST = '192.168.4.1'
+
+    try:
+        SOCKET_PORT = int(confp['wifi']['port'])
+    except:
+        SOCKET_PORT = 8763
+
+    
     global server_sock
     server_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     server_sock.bind((SOCKET_HOST,SOCKET_PORT))
     print("socket start")
+    print(server_sock)
 
 def sock_recv_udp():
-    """Socket伺服器以udp接收"""
+    """TODO Socket伺服器以udp接收"""
     while True:
         message_recv, addr = server_sock.recvfrom(1024)
 
@@ -58,11 +66,12 @@ def sock_recv_udp():
         print(message_recv.decode())
 
 def sock_write_udp():
-    """Socket伺服器以udp傳送"""
+    """TODO Socket伺服器以udp傳送"""
     while True:
         message_send = str(MessageFormat())
         for addr in sock_client_list:
             server_sock.sendto(message_send.encode(), addr)
+        time.sleep(1)
 
 
 
@@ -100,8 +109,8 @@ def lora_rx(lora:LoraRescuer):
     time.sleep(5)
 
 def lora_tx(lora:LoraRescuer,message:str):
-    lora.tx_data = message
     """將LoRa設為MODE.TX，並且以message參數傳入訊息內容"""
+    lora.tx_data = message
     lora.set_mode(MODE.STDBY)
     lora.set_dio_mapping([1,0,0,0,0,0])
     lora.set_mode(MODE.TX)
@@ -206,11 +215,21 @@ def main():
 
 
 
-if WIFI_SOCKET_TEST: socket_setup()
-else: lora_setup()
+if WIFI_SOCKET_TEST:
+    socket_setup()
+    
+    recv_udp_thread = threading.Thread(target=sock_recv_udp)
+    write_udp_thread = threading.Thread(target=sock_write_udp)
+
+    recv_udp_thread.start()
+    write_udp_thread.start()
+else: 
+    lora_setup()
 
 timer_thread = threading.Thread(target=timer)
 timer_thread.setDaemon(True)
+
+
 
 time.sleep(3)
 
@@ -219,6 +238,7 @@ try:
 except KeyboardInterrupt as ke:
     sys.stderr.write(ke)
 finally:
-    lora.set_mode(MODE.SLEEP)
-    print(lora)
+    if not WIFI_SOCKET_TEST:
+        lora.set_mode(MODE.SLEEP)
+        print(lora)
     BOARD.teardown()
