@@ -8,8 +8,6 @@ from LoraRescuer import LoraRescuer
 import socket
 
 from MessageFormat import MessageFormat
-from Rescuer import RescuerMode
-
 from SX127x.LoRa import *
 from SX127x.board_config import BOARD
 from SX127x.LoRaArgumentParser import LoRaArgumentParser
@@ -113,7 +111,7 @@ class TargetMode(Enum):
 
 
 current_mode = TargetMode.LORA
-if WIFI_SOCKET_TEST: current_mode = RescuerMode.WIFI
+if WIFI_SOCKET_TEST: current_mode = TargetMode.WIFI
 
 
 current_time = datetime.datetime.now()
@@ -137,10 +135,10 @@ def main():
 
         lora_rx(lora)
 
-    while current_mode == RescuerMode.DUAL:
+    while current_mode == TargetMode.DUAL:
         pass
 
-    while current_mode == RescuerMode.WIFI:
+    while current_mode == TargetMode.WIFI:
         pass
 
 
