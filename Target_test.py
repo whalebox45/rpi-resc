@@ -32,11 +32,13 @@ def socket_setup():
     try:   
         SOCKET_HOST = confp['wifi']['host']
     except:
+        print('Fallback: Hardcode Address')
         SOCKET_HOST = '192.168.4.1'
 
     try:
         SOCKET_PORT = int(confp['wifi']['port'])
     except:
+        print('Fallback: Hardcode Port')
         SOCKET_PORT = 8763
 
     global client_sock
@@ -48,7 +50,7 @@ def sock_recv_udp():
     """TODO Socket客戶端以udp接收"""
     while True:
         message_recv, addr = client_sock.recvfrom(1024)
-        print(message_recv.decode())
+        print("Socket RX: %s" % message_recv.decode())
 
 def sock_write_udp():
     """TODO Socket客戶端以udp傳送"""

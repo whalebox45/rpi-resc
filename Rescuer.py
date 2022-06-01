@@ -63,7 +63,7 @@ def sock_recv_udp():
         for addr in sock_client_list:
             server_sock.sendto(message_recv, addr)
         
-        print(message_recv.decode())
+        print("Socket RX: %s" % message_recv.decode())
 
 def sock_write_udp():
     """TODO Socket伺服器以udp傳送"""
@@ -216,6 +216,7 @@ def main():
 
 
 if WIFI_SOCKET_TEST:
+    print('socket setup')
     socket_setup()
     
     recv_udp_thread = threading.Thread(target=sock_recv_udp)
