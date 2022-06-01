@@ -28,7 +28,7 @@ if args.wifi: WIFI_SOCKET_TEST = True
 def socket_setup():
     """Socket伺服器連線對象設置，讀取config檔案，若失敗則用hardcode"""
     confp = configparser.ConfigParser()
-    confp.read('resc-wifi.conf')
+    confp.read('targ-wifi.conf')
     try:   
         SOCKET_HOST = confp['wifi']['host']
     except:
