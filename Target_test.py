@@ -54,7 +54,7 @@ def sock_write_udp():
     """TODO Socket客戶端以udp傳送"""
     while True:
         message_send = str(MessageFormat())
-        client_sock.sendto(message_send.encode, wifi_addr)
+        client_sock.sendto(message_send.encode(), wifi_addr)
 
 
 
