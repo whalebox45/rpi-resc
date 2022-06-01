@@ -55,6 +55,7 @@ def sock_write_udp():
     while True:
         message_send = str(MessageFormat())
         client_sock.sendto(message_send.encode(), wifi_addr)
+        time.sleep(1)
 
 
 
