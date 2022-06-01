@@ -145,8 +145,9 @@ def main():
 
 
 if WIFI_SOCKET_TEST:
-    socket_setup()
     print('socket setup')
+    socket_setup()
+    
     recv_udp_thread = threading.Thread(target=sock_recv_udp)
     write_udp_thread = threading.Thread(target=sock_write_udp)
 
