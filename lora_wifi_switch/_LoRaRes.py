@@ -26,7 +26,6 @@ class LoRaRescuer(LoRa):
         
 
     def on_rx_done(self):
-        self.set_mode(MODE.STDBY)
         BOARD.led_on()
         print("\nRxDone")
         self.clear_irq_flags(RxDone=1)
@@ -36,9 +35,9 @@ class LoRaRescuer(LoRa):
         # print(payload)
         print(f'\n{data}')
  
-        self.reset_ptr_rx()
+        # self.reset_ptr_rx()
         BOARD.led_off()
-        self.set_mode(MODE.RXCONT)
+        # self.set_mode(MODE.RXCONT)
 
     def on_tx_done(self):
         
