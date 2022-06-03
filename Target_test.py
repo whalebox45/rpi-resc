@@ -152,6 +152,9 @@ if WIFI_SOCKET_TEST:
     recv_udp_thread = threading.Thread(target=sock_recv_udp)
     write_udp_thread = threading.Thread(target=sock_write_udp)
 
+    recv_udp_thread.setDaemon(True)
+    write_udp_thread.setDaemon(True)
+
     recv_udp_thread.start()
     write_udp_thread.start()
 

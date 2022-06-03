@@ -18,6 +18,8 @@ from SX127x.LoRaArgumentParser import LoRaArgumentParser
  
 import argparse, configparser
 
+from SocketRescuer import SocketRescuer
+
 argp = argparse.ArgumentParser()
 argp.add_argument("-w","--wifi",action="store_true")
 args = argp.parse_args()
@@ -30,6 +32,36 @@ if args.wifi: WIFI_SOCKET_TEST = True
 
 
 sock_client_list = []
+
+def socket_new_setup():
+    confp = configparser.ConfigParser()
+    confp.read('resc-wifi.conf')
+    try:   
+        SOCKET_HOST = confp['wifi']['host']
+    except:
+        SOCKET_HOST = '192.168.4.1'
+
+    try:
+        SOCKET_PORT = int(confp['wifi']['port'])
+    except:
+        SOCKET_PORT = 8763
+
+    global sock_resc
+    sock_resc = SocketRescuer((SOCKET_HOST,SOCKET_PORT))
+    print("socket start")
+    print(sock_resc)
+    
+
+
+
+
+
+
+
+
+
+
+
 
 def socket_setup():
     """Socket伺服器設置，讀取config檔案，若失敗則用hardcode"""
@@ -205,22 +237,51 @@ def main():
 
 
     while current_mode == RescuerMode.DUAL:
+        fetched_time = current_time
         pass
 
 
 
     while current_mode == RescuerMode.WIFI:
-        pass
+        fetched_time = current_time
+        continue
+        try:
+            rd = sock_resc.rx_data
+            jrx = json.loads(rd.replace("\'", "\""))
+            ser = jrx['MessageID']
+            print(f'messageid: {ser}')
+        except json.JSONDecodeError as jse:
+            jrx = stored_msg
+            pass
+        except Exception as e:
+            jrx = stored_msg
+            pass
 
+        if stored_msg != jrx:
+            stored_msg = jrx
+            rx_ok_count += 1
+            print(f'rx_ok_count: {rx_ok_count}')
+            sock_resc.write_udp(lora,str(MessageFormat()))
+
+        if stored_msg == jrx:
+            pass
 
 
 
 if WIFI_SOCKET_TEST:
     print('socket setup')
-    socket_setup()
+    # socket_setup()
+    # recv_udp_thread = threading.Thread(target=sock_recv_udp())
+    # write_udp_thread = threading.Thread(target=sock_write_udp())
+
     
-    recv_udp_thread = threading.Thread(target=sock_recv_udp)
-    write_udp_thread = threading.Thread(target=sock_write_udp)
+    socket_new_setup()
+
+    recv_udp_thread = threading.Thread(target=sock_resc.recv_udp())
+    write_udp_thread = threading.Thread(target=sock_resc.write_udp())
+
+    recv_udp_thread.setDaemon(True)
+    write_udp_thread.setDaemon(True)
 
     recv_udp_thread.start()
     write_udp_thread.start()
