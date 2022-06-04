@@ -177,13 +177,14 @@ def main():
                 rd = sock_resc.rx_data
                 jrx = json.loads(rd.replace("\'", "\""))
                 ser = jrx['MessageID']
-                print(f'messageid: {ser}')
+                
             except json.JSONDecodeError as jse:
                 jrx = stored_msg
             except Exception as e:
                 jrx = stored_msg
 
             if stored_msg != jrx:
+                print(f'messageid: {ser}')
                 stored_msg = jrx
                 rx_ok_count += 1
                 print(f'rx_ok_count: {rx_ok_count}')
@@ -193,9 +194,9 @@ def main():
                 pass
 
             """
-            TODO 測試用：WIFI模式500次成功時返回LORA
+            TODO 測試用：WIFI模式10次成功時返回LORA
             """
-            if rx_ok_count >= 500:
+            if rx_ok_count >= 10:
                 current_mode = RescuerMode.LORA
                 print('Change to LORA mode')
                 rx_ok_count = 0
