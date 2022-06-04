@@ -21,6 +21,6 @@ class SocketTarget:
         message_send = str(self.tx_data)
         
         self.socket.sendto(message_send.encode(), self.addr)
-        print("Socket TX:%s"%message_send)
+        print("Socket TX<%s>:%s" % self.addr,message_send)
         time.sleep(1)
         
