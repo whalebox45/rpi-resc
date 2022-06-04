@@ -243,7 +243,8 @@ def main():
     while current_mode == RescuerMode.WIFI:
         fetched_time = current_time
         try:
-            rd = sock_resc.rx_data
+            rd = sock_resc.rx_data.decode()
+            print(rd)
             jrx = json.loads(rd.replace("\'", "\""))
             ser = jrx['MessageID']
             print(f'messageid: {ser}')
