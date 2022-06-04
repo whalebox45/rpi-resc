@@ -14,6 +14,7 @@ class SocketRescuer:
     def recv_udp(self):
         while True:
             self.rx_data, addr = self.socket.recvfrom(1024)
+            print(self.rx_data)
             if addr not in self.sock_client_list:
                 self.sock_client_list.append(addr)
     
