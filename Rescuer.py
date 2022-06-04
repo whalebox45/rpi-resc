@@ -7,9 +7,6 @@ import json
 
 from LoraRescuer import LoraRescuer
 
-import socket
-
-
 from MessageFormat import MessageFormat
 
 from SX127x.LoRa import *
@@ -39,11 +36,13 @@ def socket_new_setup():
     try:   
         SOCKET_HOST = confp['wifi']['host']
     except:
+        print('Fallback: Hardcode Address')
         SOCKET_HOST = '192.168.4.1'
 
     try:
         SOCKET_PORT = int(confp['wifi']['port'])
     except:
+        print('Fallback: Hardcode Port')
         SOCKET_PORT = 8763
 
     global sock_resc
@@ -53,70 +52,13 @@ def socket_new_setup():
     
 
 
-
-
-
-
-
-
-
-
-'''
-
-def socket_setup():
-    """Socket伺服器設置，讀取config檔案，若失敗則用hardcode"""
-    confp = configparser.ConfigParser()
-    confp.read('resc-wifi.conf')
-    try:   
-        SOCKET_HOST = confp['wifi']['host']
-    except:
-        SOCKET_HOST = '192.168.4.1'
-
-    try:
-        SOCKET_PORT = int(confp['wifi']['port'])
-    except:
-        SOCKET_PORT = 8763
-
-    
-    global server_sock
-    server_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    server_sock.bind((SOCKET_HOST,SOCKET_PORT))
-    print("socket start")
-    print(server_sock)
-
-def sock_recv_udp():
-    while True:
-        message_recv, addr = server_sock.recvfrom(1024)
-
-        if addr not in sock_client_list:
-            sock_client_list.append(addr)
-        
-        for addr in sock_client_list:
-            server_sock.sendto(message_recv, addr)
-        
-        print("Socket RX: %s" % message_recv.decode())
-
-def sock_write_udp():
-    while True:
-        message_send = str(MessageFormat())
-        for addr in sock_client_list:
-            server_sock.sendto(message_send.encode(), addr)
-        time.sleep(1)
-
-
-'''
-
-
-
 def lora_setup():
     """LoRa 模組設置"""
     BOARD.setup()
-    # parser = LoRaArgumentParser("Continuous LoRa receiver.")
 
     global lora
     lora = LoraRescuer()  
 
-    # args = parser.parse_args(lora)
 
     lora.set_mode(MODE.STDBY)
     lora.set_pa_config(pa_select=1)
@@ -130,12 +72,9 @@ def lora_setup():
 
 def lora_rx(lora:LoraRescuer):
     """將LoRa設為MODE.RXCONT"""
-    # lora.reset_ptr_rx()   
     lora.set_dio_mapping([0,0,0,0,0,0])
     lora.set_mode(MODE.RXCONT)
 
-    # Sleep
-    # lora.set_mode(MODE.SLEEP)
     time.sleep(5)
 
 def lora_tx(lora:LoraRescuer,message:str):
@@ -146,9 +85,7 @@ def lora_tx(lora:LoraRescuer,message:str):
     lora.set_mode(MODE.TX)
 
     time.sleep(5)
-    
-    # lora.set_mode(MODE.SLEEP)
-    # lora.reset_ptr_rx()
+
 
 def lora_sleep(lora:LoraRescuer):
     lora.set_mode(MODE.SLEEP)
@@ -244,10 +181,8 @@ def main():
                 print(f'messageid: {ser}')
             except json.JSONDecodeError as jse:
                 jrx = stored_msg
-                pass
             except Exception as e:
                 jrx = stored_msg
-                pass
 
             if stored_msg != jrx:
                 stored_msg = jrx
@@ -263,7 +198,8 @@ def main():
             """
             if rx_ok_count >= 5:
                 current_mode = RescuerMode.LORA
-                print('change')
+                print('Change to LORA mode')
+                rx_ok_count = 0
 
 
 print('socket setup')
