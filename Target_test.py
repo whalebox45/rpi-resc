@@ -40,7 +40,7 @@ def socket_new_setup():
         SOCKET_PORT = 8763
     
     global sock_targ
-    sock_targ = SocketTarget((SOCKET_HOST,SOCKET_PORT))
+    sock_targ = SocketTarget(tuple(SOCKET_HOST,SOCKET_PORT))
     print("socket start")
     print(sock_targ)
 

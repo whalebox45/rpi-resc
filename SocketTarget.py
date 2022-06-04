@@ -6,7 +6,7 @@ class SocketTarget:
     rx_data = ''
     tx_data = 'test'
 
-    def __init__(self, address):
+    def __init__(self, address:tuple):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         # self.socket.bind(address)
         self.addr = address
@@ -14,7 +14,7 @@ class SocketTarget:
     def recv_udp(self):
         while True:
             self.rx_data, addr = self.socket.recvfrom(1024)
-            print("Socket RX:%s"%self.rx_data)
+            print("Socket RX:%s" % self.rx_data)
     
     def write_udp(self,message):
         self.tx_data = message

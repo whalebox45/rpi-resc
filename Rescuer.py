@@ -46,10 +46,10 @@ def socket_new_setup():
         SOCKET_PORT = 8763
 
     global sock_resc
-    sock_resc = SocketRescuer((SOCKET_HOST,SOCKET_PORT))
+    sock_resc = SocketRescuer(tuple(SOCKET_HOST,SOCKET_PORT))
     print("socket start")
     print(sock_resc)
-    
+    #test
 
 
 def lora_setup():
