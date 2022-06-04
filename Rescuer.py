@@ -7,9 +7,6 @@ import json
 
 from LoraRescuer import LoraRescuer
 
-import socket
-
-
 from MessageFormat import MessageFormat
 
 from SX127x.LoRa import *
@@ -31,7 +28,7 @@ if args.wifi: WIFI_SOCKET_TEST = True
 
 
 
-sock_client_list = []
+# sock_client_list = []
 
 def socket_new_setup():
     confp = configparser.ConfigParser()
@@ -39,86 +36,29 @@ def socket_new_setup():
     try:   
         SOCKET_HOST = confp['wifi']['host']
     except:
+        print('Fallback: Hardcode Address')
         SOCKET_HOST = '192.168.4.1'
 
     try:
         SOCKET_PORT = int(confp['wifi']['port'])
     except:
+        print('Fallback: Hardcode Port')
         SOCKET_PORT = 8763
 
     global sock_resc
-    sock_resc = SocketRescuer((SOCKET_HOST,SOCKET_PORT))
+    sock_resc = SocketRescuer(SOCKET_HOST,SOCKET_PORT)
     print("socket start")
     print(sock_resc)
-    
-
-
-
-
-
-
-
-
-
-
-
-
-def socket_setup():
-    """Socket伺服器設置，讀取config檔案，若失敗則用hardcode"""
-    confp = configparser.ConfigParser()
-    confp.read('resc-wifi.conf')
-    try:   
-        SOCKET_HOST = confp['wifi']['host']
-    except:
-        SOCKET_HOST = '192.168.4.1'
-
-    try:
-        SOCKET_PORT = int(confp['wifi']['port'])
-    except:
-        SOCKET_PORT = 8763
-
-    
-    global server_sock
-    server_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    server_sock.bind((SOCKET_HOST,SOCKET_PORT))
-    print("socket start")
-    print(server_sock)
-
-def sock_recv_udp():
-    """TODO Socket伺服器以udp接收"""
-    while True:
-        message_recv, addr = server_sock.recvfrom(1024)
-
-        if addr not in sock_client_list:
-            sock_client_list.append(addr)
-        
-        for addr in sock_client_list:
-            server_sock.sendto(message_recv, addr)
-        
-        print("Socket RX: %s" % message_recv.decode())
-
-def sock_write_udp():
-    """TODO Socket伺服器以udp傳送"""
-    while True:
-        message_send = str(MessageFormat())
-        for addr in sock_client_list:
-            server_sock.sendto(message_send.encode(), addr)
-        time.sleep(1)
-
-
-
-
+    #test
 
 
 def lora_setup():
     """LoRa 模組設置"""
     BOARD.setup()
-    # parser = LoRaArgumentParser("Continuous LoRa receiver.")
 
     global lora
     lora = LoraRescuer()  
 
-    # args = parser.parse_args(lora)
 
     lora.set_mode(MODE.STDBY)
     lora.set_pa_config(pa_select=1)
@@ -132,12 +72,9 @@ def lora_setup():
 
 def lora_rx(lora:LoraRescuer):
     """將LoRa設為MODE.RXCONT"""
-    # lora.reset_ptr_rx()   
     lora.set_dio_mapping([0,0,0,0,0,0])
     lora.set_mode(MODE.RXCONT)
 
-    # Sleep
-    # lora.set_mode(MODE.SLEEP)
     time.sleep(5)
 
 def lora_tx(lora:LoraRescuer,message:str):
@@ -147,13 +84,11 @@ def lora_tx(lora:LoraRescuer,message:str):
     lora.set_dio_mapping([1,0,0,0,0,0])
     lora.set_mode(MODE.TX)
 
-    
     time.sleep(5)
-    # Sleep
-    
-    # lora.set_mode(MODE.SLEEP)
-    # lora.reset_ptr_rx()
 
+
+def lora_sleep(lora:LoraRescuer):
+    lora.set_mode(MODE.SLEEP)
 
 @unique
 class RescuerMode(Enum):
@@ -173,12 +108,7 @@ current_time = datetime.datetime.now()
 rx_ok_count = 0
 rx_fail_count = 0
 
-def timer():
-    while True:
-        global current_time
-        current_time = datetime.datetime.now()
-        # print(datetime.datetime.time(current_time))
-        time.sleep(0.5)
+
             
 
 
@@ -188,105 +118,115 @@ def main():
     stored_msg = object()
 
 
+    while True:
+        while current_mode == RescuerMode.LORA:
+            lora_rx(lora)
+            '''
+                如果在規定時間內收到LoRa訊息，增加計數器數值，並且發送自身的LoRa訊息
+            '''
 
-    while current_mode == RescuerMode.LORA:
-        lora_rx(lora)
-        '''
-            如果在規定時間內收到LoRa訊息，增加計數器數值，並且發送自身的LoRa訊息
-        '''
+            fetched_time = current_time
+            try:
+                rd = lora.rx_data
+                jrx = json.loads(rd.replace("\'", "\""))
+                ser = jrx['MessageID']
+                print(f'messageid: {ser}')
+            except json.JSONDecodeError as jse:
+                jrx = stored_msg
+            except Exception as e:
+                jrx = stored_msg
+            
 
-        fetched_time = current_time
-        try:
-            rd = lora.rx_data
-            jrx = json.loads(rd.replace("\'", "\""))
-            ser = jrx['MessageID']
-            print(f'messageid: {ser}')
-        except json.JSONDecodeError as jse:
-            jrx = stored_msg
-            pass
-        except Exception as e:
-            jrx = stored_msg
-            pass
+            if stored_msg != jrx:
+            # if get_message_in10sec:
+                stored_msg = jrx
+                rx_ok_count += 1
+                print(f'rx_ok_count: {rx_ok_count}')
+                lora_tx(lora,str(MessageFormat()))
+
+            '''
+                TODO 如果在規定時間內都沒有收到LoRa訊息，就重設計數器數值
+            '''
+            
+            # if lost_message_in10sec:
+            #     rx_ok_count = 0
+            
+            '''
+                TODO 如果計數器數值數值足夠大就切換至 DUAL 模式
+                暫時設為 WIFI 模式
+            '''
+            if rx_ok_count >= 5:
+                current_mode = RescuerMode.WIFI
+                print('Change to WIFI Mode')
+                rx_ok_count = 0
         
 
-        if stored_msg != jrx:
-        # if get_message_in10sec:
-            stored_msg = jrx
-            rx_ok_count += 1
-            print(f'rx_ok_count: {rx_ok_count}')
-            lora_tx(lora,str(MessageFormat()))
-
-        '''
-            TODO 如果在規定時間內都沒有收到LoRa訊息，就重設計數器數值
-        '''
-        
-        # if lost_message_in10sec:
-        #     rx_ok_count = 0
-        
-        '''
-            TODO 如果計數器數值數值足夠大就切換至 DUAL 模式
-        '''
-        if rx_ok_count >= 5:
-            current_mode = RescuerMode.DUAL
-            print('Change to DUAL Mode')
-            current_mode = RescuerMode.LORA
-            rx_ok_count = 0
-    
 
 
 
 
-    while current_mode == RescuerMode.DUAL:
-        fetched_time = current_time
-        pass
 
-
-
-    while current_mode == RescuerMode.WIFI:
-        fetched_time = current_time
-        continue
-        try:
-            rd = sock_resc.rx_data
-            jrx = json.loads(rd.replace("\'", "\""))
-            ser = jrx['MessageID']
-            print(f'messageid: {ser}')
-        except json.JSONDecodeError as jse:
-            jrx = stored_msg
-            pass
-        except Exception as e:
-            jrx = stored_msg
-            pass
-
-        if stored_msg != jrx:
-            stored_msg = jrx
-            rx_ok_count += 1
-            print(f'rx_ok_count: {rx_ok_count}')
-            sock_resc.write_udp(lora,str(MessageFormat()))
-
-        if stored_msg == jrx:
+        while current_mode == RescuerMode.DUAL:
+            fetched_time = current_time
             pass
 
 
 
-if WIFI_SOCKET_TEST:
-    print('socket setup')
-    # socket_setup()
-    # recv_udp_thread = threading.Thread(target=sock_recv_udp())
-    # write_udp_thread = threading.Thread(target=sock_write_udp())
 
-    
-    socket_new_setup()
 
-    recv_udp_thread = threading.Thread(target=sock_resc.recv_udp())
-    write_udp_thread = threading.Thread(target=sock_resc.write_udp())
 
-    recv_udp_thread.setDaemon(True)
-    write_udp_thread.setDaemon(True)
 
-    recv_udp_thread.start()
-    write_udp_thread.start()
-else: 
-    lora_setup()
+        while current_mode == RescuerMode.WIFI:
+            lora_sleep(lora)
+            fetched_time = current_time
+            try:
+                rd = sock_resc.rx_data
+                jrx = json.loads(rd.replace("\'", "\""))
+                ser = jrx['MessageID']
+                
+            except json.JSONDecodeError as jse:
+                jrx = stored_msg
+            except Exception as e:
+                jrx = stored_msg
+
+            if stored_msg != jrx:
+                print(f'messageid: {ser}')
+                stored_msg = jrx
+                rx_ok_count += 1
+                print(f'rx_ok_count: {rx_ok_count}')
+                sock_resc.write_udp(str(MessageFormat()))
+
+            if stored_msg == jrx:
+                pass
+
+            """
+            TODO 測試用：WIFI模式10次成功時返回LORA
+            """
+            if rx_ok_count >= 10:
+                current_mode = RescuerMode.LORA
+                print('Change to LORA mode')
+                rx_ok_count = 0
+
+
+print('socket setup')
+# socket_setup()
+# recv_udp_thread = threading.Thread(target=sock_recv_udp())
+# write_udp_thread = threading.Thread(target=sock_write_udp())
+socket_new_setup()
+
+recv_udp_thread = threading.Thread(target=sock_resc.recv_udp)
+recv_udp_thread.setDaemon(True)
+recv_udp_thread.start()
+
+lora_setup()
+
+def timer():
+    while True:
+        global current_time
+        current_time = datetime.datetime.now()
+        # print(datetime.datetime.time(current_time))
+        time.sleep(0.5)
+
 
 timer_thread = threading.Thread(target=timer)
 timer_thread.setDaemon(True)
@@ -298,9 +238,8 @@ time.sleep(3)
 try:  
     main()
 except KeyboardInterrupt as ke:
-    sys.stderr.write(ke)
+    sys.stderr.write(str(ke))
 finally:
-    if not WIFI_SOCKET_TEST:
-        lora.set_mode(MODE.SLEEP)
-        print(lora)
+    lora.set_mode(MODE.SLEEP)
+    print(lora)
     BOARD.teardown()
