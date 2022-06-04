@@ -187,7 +187,7 @@ def main():
     while current_mode == TargetMode.WIFI:
         lora_sleep(lora)
         fetched_time = current_time
-
+        sock_targ.write_udp(str(MessageFormat()))
         try:
             rd = sock_targ.rx_data.decode()
             print(rd)
@@ -203,7 +203,7 @@ def main():
             stored_msg = jrx
             rx_ok_count += 1
             print(f'rx_ok_count: {rx_ok_count}')
-            sock_targ.write_udp(str(MessageFormat()))
+            
         
         if stored_msg == jrx:
             pass
