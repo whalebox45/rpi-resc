@@ -189,11 +189,11 @@ def main():
         while current_mode == TargetMode.WIFI:
             lora_sleep(lora)
             fetched_time = current_time
-            # sock_targ.write_udp(str(MessageFormat()))
-            sock_write_udp()
+            sock_targ.write_udp(str(MessageFormat()))
+            # sock_write_udp()
             try:
-                # rd = sock_targ.rx_data.decode()
-                rd = sock_message_recv.decode()
+                rd = sock_targ.rx_data
+                # rd = sock_message_recv.decode()
                 print(rd)
                 jrx = json.loads(rd.replace("\'","\""))
                 ser = jrx['MessageID']
@@ -223,19 +223,19 @@ def main():
 
 
 print('socket setup')
-socket_setup()   
-recv_udp_thread = threading.Thread(target=sock_recv_udp)
+# socket_setup()   
+# recv_udp_thread = threading.Thread(target=sock_recv_udp)
 # write_udp_thread = threading.Thread(target=sock_write_udp)
-recv_udp_thread.setDaemon(True)
-recv_udp_thread.start()
-
-
-
-# socket_new_setup()
-
-# recv_udp_thread = threading.Thread(target=sock_targ.recv_udp)
 # recv_udp_thread.setDaemon(True)
 # recv_udp_thread.start()
+
+
+
+socket_new_setup()
+
+recv_udp_thread = threading.Thread(target=sock_targ.recv_udp)
+recv_udp_thread.setDaemon(True)
+recv_udp_thread.start()
 
 lora_setup()
 
