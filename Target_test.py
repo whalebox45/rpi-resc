@@ -50,7 +50,7 @@ def sock_recv_udp():
     """TODO Socket客戶端以udp接收"""
     while True:
         message_recv, addr = client_sock.recvfrom(1024)
-        print("Socket RX: %s %s" % addr, message_recv.decode())
+        print("Socket RX: %s" % message_recv.decode())
 
 def sock_write_udp():
     """TODO Socket客戶端以udp傳送"""

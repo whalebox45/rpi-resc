@@ -61,7 +61,7 @@ def socket_new_setup():
 
 
 
-
+'''
 
 def socket_setup():
     """Socket伺服器設置，讀取config檔案，若失敗則用hardcode"""
@@ -85,7 +85,6 @@ def socket_setup():
     print(server_sock)
 
 def sock_recv_udp():
-    """TODO Socket伺服器以udp接收"""
     while True:
         message_recv, addr = server_sock.recvfrom(1024)
 
@@ -98,7 +97,6 @@ def sock_recv_udp():
         print("Socket RX: %s" % message_recv.decode())
 
 def sock_write_udp():
-    """TODO Socket伺服器以udp傳送"""
     while True:
         message_send = str(MessageFormat())
         for addr in sock_client_list:
@@ -106,7 +104,7 @@ def sock_write_udp():
         time.sleep(1)
 
 
-
+'''
 
 
 
@@ -147,13 +145,13 @@ def lora_tx(lora:LoraRescuer,message:str):
     lora.set_dio_mapping([1,0,0,0,0,0])
     lora.set_mode(MODE.TX)
 
-    
     time.sleep(5)
-    # Sleep
     
     # lora.set_mode(MODE.SLEEP)
     # lora.reset_ptr_rx()
 
+def lora_sleep(lora:LoraRescuer):
+    lora.set_mode(MODE.SLEEP)
 
 @unique
 class RescuerMode(Enum):
@@ -173,12 +171,7 @@ current_time = datetime.datetime.now()
 rx_ok_count = 0
 rx_fail_count = 0
 
-def timer():
-    while True:
-        global current_time
-        current_time = datetime.datetime.now()
-        # print(datetime.datetime.time(current_time))
-        time.sleep(0.5)
+
             
 
 
@@ -223,11 +216,11 @@ def main():
         
         '''
             TODO 如果計數器數值數值足夠大就切換至 DUAL 模式
+            暫時設為 WIFI 模式
         '''
         if rx_ok_count >= 5:
-            current_mode = RescuerMode.DUAL
-            print('Change to DUAL Mode')
-            current_mode = RescuerMode.LORA
+            current_mode = RescuerMode.WIFI
+            print('Change to WIFI Mode')
             rx_ok_count = 0
     
 
@@ -241,6 +234,7 @@ def main():
 
 
     while current_mode == RescuerMode.WIFI:
+        lora_sleep(lora)
         fetched_time = current_time
         try:
             rd = sock_resc.rx_data.decode()
@@ -264,24 +258,33 @@ def main():
         if stored_msg == jrx:
             pass
 
+        """
+        TODO 測試用：WIFI模式五次成功時返回LORA
+        """
+        if rx_ok_count >= 5:
+            current_mode = RescuerMode.LORA
+            print('change')
 
 
-if WIFI_SOCKET_TEST:
-    print('socket setup')
-    # socket_setup()
-    # recv_udp_thread = threading.Thread(target=sock_recv_udp())
-    # write_udp_thread = threading.Thread(target=sock_write_udp())
+print('socket setup')
+# socket_setup()
+# recv_udp_thread = threading.Thread(target=sock_recv_udp())
+# write_udp_thread = threading.Thread(target=sock_write_udp())
+socket_new_setup()
 
-    
-    socket_new_setup()
+recv_udp_thread = threading.Thread(target=sock_resc.recv_udp)
+recv_udp_thread.setDaemon(True)
+recv_udp_thread.start()
 
-    recv_udp_thread = threading.Thread(target=sock_resc.recv_udp)
-    
-    recv_udp_thread.setDaemon(True)
+lora_setup()
 
-    recv_udp_thread.start()
-else: 
-    lora_setup()
+def timer():
+    while True:
+        global current_time
+        current_time = datetime.datetime.now()
+        # print(datetime.datetime.time(current_time))
+        time.sleep(0.5)
+
 
 timer_thread = threading.Thread(target=timer)
 timer_thread.setDaemon(True)
@@ -295,7 +298,6 @@ try:
 except KeyboardInterrupt as ke:
     sys.stderr.write(ke)
 finally:
-    if not WIFI_SOCKET_TEST:
-        lora.set_mode(MODE.SLEEP)
-        print(lora)
+    lora.set_mode(MODE.SLEEP)
+    print(lora)
     BOARD.teardown()
