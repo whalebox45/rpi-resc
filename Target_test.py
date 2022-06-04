@@ -148,73 +148,74 @@ rx_fail_count = 0
 
 
 def main():
-    global current_mode, rx_ok_count, current_time
-    stored_msg = object()
-    while current_mode == TargetMode.LORA:
+    while True:
+        global current_mode, rx_ok_count, current_time
+        stored_msg = object()
+        while current_mode == TargetMode.LORA:
 
-        fetched_time = current_time
-        lora_tx(lora,str(MessageFormat()))
-        lora_rx(lora)
+            fetched_time = current_time
+            lora_tx(lora,str(MessageFormat()))
+            lora_rx(lora)
 
-        try:
-            rd = lora.rx_data
-            print(rd)
-            jrx = json.loads(rd.replace("\'","\""))
-            ser = jrx['MessageID']
-            print(f'messageid: {ser}')
-        except json.JSONDecodeError as jse:
-            jrx = stored_msg
-        except Exception as e:
-            jrx = stored_msg
+            try:
+                rd = lora.rx_data
+                print(rd)
+                jrx = json.loads(rd.replace("\'","\""))
+                ser = jrx['MessageID']
+                print(f'messageid: {ser}')
+            except json.JSONDecodeError as jse:
+                jrx = stored_msg
+            except Exception as e:
+                jrx = stored_msg
 
-        if stored_msg != jrx:
-            stored_msg = jrx
-            rx_ok_count += 1
-            print(f'rx_ok_count: {rx_ok_count}')
-        
-        '''
-            TODO 如果計數器數值數值足夠大就切換至 DUAL 模式
-            暫時設為 WIFI 模式
-        '''
-        if rx_ok_count >= 5:
-            current_mode = TargetMode.WIFI
-            print('Change to WIFI Mode')
-            rx_ok_count = 0
-
-    while current_mode == TargetMode.DUAL:
-        pass
-
-    while current_mode == TargetMode.WIFI:
-        lora_sleep(lora)
-        fetched_time = current_time
-        sock_targ.write_udp(str(MessageFormat()))
-        try:
-            rd = sock_targ.rx_data.decode()
-            print(rd)
-            jrx = json.loads(rd.replace("\'","\""))
-            ser = jrx['MessageID']
-            print(f'messageid: {ser}')
-        except json.JSONDecodeError as jse:
-            jrx = stored_msg
-        except Exception as e:
-            jrx = stored_msg
-
-        if stored_msg != jrx:
-            stored_msg = jrx
-            rx_ok_count += 1
-            print(f'rx_ok_count: {rx_ok_count}')
+            if stored_msg != jrx:
+                stored_msg = jrx
+                rx_ok_count += 1
+                print(f'rx_ok_count: {rx_ok_count}')
             
-        
-        if stored_msg == jrx:
+            '''
+                TODO 如果計數器數值數值足夠大就切換至 DUAL 模式
+                暫時設為 WIFI 模式
+            '''
+            if rx_ok_count >= 5:
+                current_mode = TargetMode.WIFI
+                print('Change to WIFI Mode')
+                rx_ok_count = 0
+
+        while current_mode == TargetMode.DUAL:
             pass
 
-        """
-            TODO 測試用：WIFI模式五次成功時返回LORA
-        """
-        if rx_ok_count >= 5:
-            current_mode = TargetMode.LORA
-            print('Change to LORA mode')
-            rx_ok_count = 0
+        while current_mode == TargetMode.WIFI:
+            lora_sleep(lora)
+            fetched_time = current_time
+            sock_targ.write_udp(str(MessageFormat()))
+            try:
+                rd = sock_targ.rx_data.decode()
+                print(rd)
+                jrx = json.loads(rd.replace("\'","\""))
+                ser = jrx['MessageID']
+                print(f'messageid: {ser}')
+            except json.JSONDecodeError as jse:
+                jrx = stored_msg
+            except Exception as e:
+                jrx = stored_msg
+
+            if stored_msg != jrx:
+                stored_msg = jrx
+                rx_ok_count += 1
+                print(f'rx_ok_count: {rx_ok_count}')
+                
+            
+            if stored_msg == jrx:
+                pass
+
+            """
+                TODO 測試用：WIFI模式五次成功時返回LORA
+            """
+            if rx_ok_count >= 5:
+                current_mode = TargetMode.LORA
+                print('Change to LORA mode')
+                rx_ok_count = 0
 
 
 
