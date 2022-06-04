@@ -259,7 +259,7 @@ def main():
             stored_msg = jrx
             rx_ok_count += 1
             print(f'rx_ok_count: {rx_ok_count}')
-            sock_resc.write_udp(lora,str(MessageFormat()))
+            sock_resc.write_udp(str(MessageFormat()))
 
         if stored_msg == jrx:
             pass
