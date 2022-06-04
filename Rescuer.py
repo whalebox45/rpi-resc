@@ -181,89 +181,89 @@ def main():
     stored_msg = object()
 
 
+    while True:
+        while current_mode == RescuerMode.LORA:
+            lora_rx(lora)
+            '''
+                如果在規定時間內收到LoRa訊息，增加計數器數值，並且發送自身的LoRa訊息
+            '''
 
-    while current_mode == RescuerMode.LORA:
-        lora_rx(lora)
-        '''
-            如果在規定時間內收到LoRa訊息，增加計數器數值，並且發送自身的LoRa訊息
-        '''
+            fetched_time = current_time
+            try:
+                rd = lora.rx_data
+                jrx = json.loads(rd.replace("\'", "\""))
+                ser = jrx['MessageID']
+                print(f'messageid: {ser}')
+            except json.JSONDecodeError as jse:
+                jrx = stored_msg
+            except Exception as e:
+                jrx = stored_msg
+            
 
-        fetched_time = current_time
-        try:
-            rd = lora.rx_data
-            jrx = json.loads(rd.replace("\'", "\""))
-            ser = jrx['MessageID']
-            print(f'messageid: {ser}')
-        except json.JSONDecodeError as jse:
-            jrx = stored_msg
-        except Exception as e:
-            jrx = stored_msg
+            if stored_msg != jrx:
+            # if get_message_in10sec:
+                stored_msg = jrx
+                rx_ok_count += 1
+                print(f'rx_ok_count: {rx_ok_count}')
+                lora_tx(lora,str(MessageFormat()))
+
+            '''
+                TODO 如果在規定時間內都沒有收到LoRa訊息，就重設計數器數值
+            '''
+            
+            # if lost_message_in10sec:
+            #     rx_ok_count = 0
+            
+            '''
+                TODO 如果計數器數值數值足夠大就切換至 DUAL 模式
+                暫時設為 WIFI 模式
+            '''
+            if rx_ok_count >= 5:
+                current_mode = RescuerMode.WIFI
+                print('Change to WIFI Mode')
+                rx_ok_count = 0
         
 
-        if stored_msg != jrx:
-        # if get_message_in10sec:
-            stored_msg = jrx
-            rx_ok_count += 1
-            print(f'rx_ok_count: {rx_ok_count}')
-            lora_tx(lora,str(MessageFormat()))
-
-        '''
-            TODO 如果在規定時間內都沒有收到LoRa訊息，就重設計數器數值
-        '''
-        
-        # if lost_message_in10sec:
-        #     rx_ok_count = 0
-        
-        '''
-            TODO 如果計數器數值數值足夠大就切換至 DUAL 模式
-            暫時設為 WIFI 模式
-        '''
-        if rx_ok_count >= 5:
-            current_mode = RescuerMode.WIFI
-            print('Change to WIFI Mode')
-            rx_ok_count = 0
-    
 
 
 
-
-    while current_mode == RescuerMode.DUAL:
-        fetched_time = current_time
-        pass
-
-
-
-    while current_mode == RescuerMode.WIFI:
-        lora_sleep(lora)
-        fetched_time = current_time
-        try:
-            rd = sock_resc.rx_data.decode()
-            print(rd)
-            jrx = json.loads(rd.replace("\'", "\""))
-            ser = jrx['MessageID']
-            print(f'messageid: {ser}')
-        except json.JSONDecodeError as jse:
-            jrx = stored_msg
-            pass
-        except Exception as e:
-            jrx = stored_msg
+        while current_mode == RescuerMode.DUAL:
+            fetched_time = current_time
             pass
 
-        if stored_msg != jrx:
-            stored_msg = jrx
-            rx_ok_count += 1
-            print(f'rx_ok_count: {rx_ok_count}')
-            sock_resc.write_udp(str(MessageFormat()))
 
-        if stored_msg == jrx:
-            pass
 
-        """
-        TODO 測試用：WIFI模式五次成功時返回LORA
-        """
-        if rx_ok_count >= 5:
-            current_mode = RescuerMode.LORA
-            print('change')
+        while current_mode == RescuerMode.WIFI:
+            lora_sleep(lora)
+            fetched_time = current_time
+            try:
+                rd = sock_resc.rx_data.decode()
+                print(rd)
+                jrx = json.loads(rd.replace("\'", "\""))
+                ser = jrx['MessageID']
+                print(f'messageid: {ser}')
+            except json.JSONDecodeError as jse:
+                jrx = stored_msg
+                pass
+            except Exception as e:
+                jrx = stored_msg
+                pass
+
+            if stored_msg != jrx:
+                stored_msg = jrx
+                rx_ok_count += 1
+                print(f'rx_ok_count: {rx_ok_count}')
+                sock_resc.write_udp(str(MessageFormat()))
+
+            if stored_msg == jrx:
+                pass
+
+            """
+            TODO 測試用：WIFI模式五次成功時返回LORA
+            """
+            if rx_ok_count >= 5:
+                current_mode = RescuerMode.LORA
+                print('change')
 
 
 print('socket setup')
