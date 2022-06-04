@@ -175,7 +175,6 @@ def main():
             fetched_time = current_time
             try:
                 rd = sock_resc.rx_data
-                print(rd)
                 jrx = json.loads(rd.replace("\'", "\""))
                 ser = jrx['MessageID']
                 print(f'messageid: {ser}')
