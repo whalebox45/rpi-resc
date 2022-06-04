@@ -8,9 +8,9 @@ class SocketRescuer:
 
     sock_client_list = []
 
-    def __init__(self, address):
+    def __init__(self, host, port):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.socket.bind(address)
+        self.socket.bind((host, port))
     
     def recv_udp(self):
         while True:
