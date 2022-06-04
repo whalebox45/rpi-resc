@@ -29,7 +29,7 @@ def socket_new_setup():
     confp = configparser.ConfigParser()
     confp.read('targ-wifi.conf')
     try:
-        SOCKET_HOST = confp['wifi']['port']
+        SOCKET_HOST = confp['wifi']['host']
     except:
         print('Fallback: Hardcode Address')
         SOCKET_HOST = '192.168.4.1'
