@@ -1,0 +1,33 @@
+
+def socket_setup():
+    """Socket伺服器連線對象設置，讀取config檔案，若失敗則用hardcode"""
+    confp = configparser.ConfigParser()
+    confp.read('targ-wifi.conf')
+    try:   
+        SOCKET_HOST = confp['wifi']['host']
+    except:
+        print('Fallback: Hardcode Address')
+        SOCKET_HOST = '192.168.4.1'
+
+    try:
+        SOCKET_PORT = int(confp['wifi']['port'])
+    except:
+        print('Fallback: Hardcode Port')
+        SOCKET_PORT = 8763
+
+    global client_sock
+    client_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    global wifi_addr
+    wifi_addr = (SOCKET_HOST,SOCKET_PORT)
+
+def sock_recv_udp():
+    while True:
+        global sock_message_recv
+        sock_message_recv, addr = client_sock.recvfrom(1024)
+        print("Socket RX: %s" % sock_message_recv.decode())
+
+def sock_write_udp():
+    message_send = str(MessageFormat())
+    client_sock.sendto(message_send.encode(), wifi_addr)
+    print("Socket TX: %s" % message_send)
+    time.sleep(1)

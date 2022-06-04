@@ -164,9 +164,15 @@ def main():
 
 
 
+
+
         while current_mode == RescuerMode.DUAL:
             fetched_time = current_time
             pass
+
+
+
+
 
 
 
@@ -232,7 +238,7 @@ time.sleep(3)
 try:  
     main()
 except KeyboardInterrupt as ke:
-    sys.stderr.write(ke)
+    sys.stderr.write(str(ke))
 finally:
     lora.set_mode(MODE.SLEEP)
     print(lora)

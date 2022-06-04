@@ -50,46 +50,6 @@ def socket_new_setup():
 
 
 
-def socket_setup():
-    """Socket伺服器連線對象設置，讀取config檔案，若失敗則用hardcode"""
-    confp = configparser.ConfigParser()
-    confp.read('targ-wifi.conf')
-    try:   
-        SOCKET_HOST = confp['wifi']['host']
-    except:
-        print('Fallback: Hardcode Address')
-        SOCKET_HOST = '192.168.4.1'
-
-    try:
-        SOCKET_PORT = int(confp['wifi']['port'])
-    except:
-        print('Fallback: Hardcode Port')
-        SOCKET_PORT = 8763
-
-    global client_sock
-    client_sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    global wifi_addr
-    wifi_addr = (SOCKET_HOST,SOCKET_PORT)
-
-def sock_recv_udp():
-    while True:
-        global sock_message_recv
-        sock_message_recv, addr = client_sock.recvfrom(1024)
-        print("Socket RX: %s" % sock_message_recv.decode())
-
-def sock_write_udp():
-    message_send = str(MessageFormat())
-    client_sock.sendto(message_send.encode(), wifi_addr)
-    print("Socket TX: %s" % message_send)
-    time.sleep(1)
-
-
-
-
-
-
-
-
 
 
 
@@ -183,8 +143,18 @@ def main():
                 print('Change to WIFI Mode')
                 rx_ok_count = 0
 
+
+
+
+
+
         while current_mode == TargetMode.DUAL:
             pass
+
+
+
+
+
 
         while current_mode == TargetMode.WIFI:
             lora_sleep(lora)
@@ -213,7 +183,7 @@ def main():
                 pass
 
             """
-                TODO 測試用：WIFI模式500次成功時返回LORA
+                TODO 測試用：WIFI模式10次成功時返回LORA
             """
             if rx_ok_count >= 10:
                 current_mode = TargetMode.LORA
@@ -262,7 +232,7 @@ time.sleep(3)
 try:
     main()
 except KeyboardInterrupt as ke:
-    sys.stderr.write(ke)
+    sys.stderr.write(str(ke))
 finally:
     lora.set_mode(MODE.SLEEP)
     print(lora)
