@@ -8,7 +8,7 @@ class SocketTarget:
 
     def __init__(self, address):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.socket.bind(address)
+        # self.socket.bind(address)
         self.addr = address
 
     def recv_udp(self):
