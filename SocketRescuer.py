@@ -12,9 +12,10 @@ class SocketRescuer(socket.socket):
         super.bind(address)
     
     def recv_udp(self):
-        self.rx_data, addr = self.recvfrom(1024)
-        if addr not in self.sock_client_list:
-            self.sock_client_list.append(addr)
+        while True:
+            self.rx_data, addr = self.recvfrom(1024)
+            if addr not in self.sock_client_list:
+                self.sock_client_list.append(addr)
     
     def write_udp(self):
         message_send = str(self.rx_data)

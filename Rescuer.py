@@ -203,10 +203,8 @@ def main():
             print(f'messageid: {ser}')
         except json.JSONDecodeError as jse:
             jrx = stored_msg
-            pass
         except Exception as e:
             jrx = stored_msg
-            pass
         
 
         if stored_msg != jrx:
@@ -244,7 +242,6 @@ def main():
 
     while current_mode == RescuerMode.WIFI:
         fetched_time = current_time
-        continue
         try:
             rd = sock_resc.rx_data
             jrx = json.loads(rd.replace("\'", "\""))
@@ -278,13 +275,10 @@ if WIFI_SOCKET_TEST:
     socket_new_setup()
 
     recv_udp_thread = threading.Thread(target=sock_resc.recv_udp())
-    write_udp_thread = threading.Thread(target=sock_resc.write_udp())
-
+    
     recv_udp_thread.setDaemon(True)
-    write_udp_thread.setDaemon(True)
 
     recv_udp_thread.start()
-    write_udp_thread.start()
 else: 
     lora_setup()
 
