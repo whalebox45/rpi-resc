@@ -28,7 +28,7 @@ if args.wifi: WIFI_SOCKET_TEST = True
 
 
 
-sock_client_list = []
+# sock_client_list = []
 
 def socket_new_setup():
     confp = configparser.ConfigParser()
