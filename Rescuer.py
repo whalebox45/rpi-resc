@@ -274,7 +274,7 @@ if WIFI_SOCKET_TEST:
     
     socket_new_setup()
 
-    recv_udp_thread = threading.Thread(target=sock_resc.recv_udp())
+    recv_udp_thread = threading.Thread(target=sock_resc.recv_udp)
     
     recv_udp_thread.setDaemon(True)
 
