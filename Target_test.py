@@ -212,7 +212,7 @@ def main():
             TODO 測試用：WIFI模式五次成功時返回LORA
         """
         if rx_ok_count >= 5:
-            current_mode = RescuerMode.LORA
+            current_mode = TargetMode.LORA
             print('Change to LORA mode')
             rx_ok_count = 0
 
