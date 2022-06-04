@@ -80,6 +80,7 @@ def sock_recv_udp():
 def sock_write_udp():
     message_send = str(MessageFormat())
     client_sock.sendto(message_send.encode(), wifi_addr)
+    print("Socket TX: %s" % message_send)
     time.sleep(1)
 
 
@@ -212,9 +213,9 @@ def main():
                 pass
 
             """
-                TODO 測試用：WIFI模式五次成功時返回LORA
+                TODO 測試用：WIFI模式500次成功時返回LORA
             """
-            if rx_ok_count >= 5:
+            if rx_ok_count >= 500:
                 current_mode = TargetMode.LORA
                 print('Change to LORA mode')
                 rx_ok_count = 0
