@@ -17,7 +17,8 @@ class SocketRescuer:
             if addr not in self.sock_client_list:
                 self.sock_client_list.append(addr)
     
-    def write_udp(self):
+    def write_udp(self,message):
+        self.rx_data = message
         message_send = str(self.rx_data)
         for addr in self.sock_client_list:
             self.socket.sendto(message_send.encode(), addr)
