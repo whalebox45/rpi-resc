@@ -128,7 +128,6 @@ def main():
         =========================================="""
         while current_mode == TargetMode.LORA:
 
-            fetched_time = current_time
             lora_tx(lora,str(MessageFormat()))
             lora_rx(lora)
 
@@ -168,6 +167,7 @@ def main():
                 current_mode = TargetMode.WIFI
                 print('Change to WIFI Mode')
                 rx_ok_count = 0
+                rx_ok_time = current_time
 
 
 
@@ -184,7 +184,6 @@ def main():
             WIFI 模式
         =========================================="""
         while current_mode == TargetMode.WIFI:
-            fetched_time = current_time
             lora_sleep(lora)
 
             sock_targ.write_udp(str(MessageFormat()))
@@ -212,10 +211,11 @@ def main():
             """
                 超過五秒沒接收到新的，則視為接收失敗一次
             """
-            if (fetched_time - rx_ok_time).seconds >= 5:
+            if (current_time - rx_ok_time).seconds >= 7:
                 rx_fail_count += 1
                 print(f'rx_fail_count: {rx_fail_count}')
                 rx_ok_count = 0
+                rx_ok_time = current_time
 
 
 

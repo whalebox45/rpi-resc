@@ -173,6 +173,7 @@ def main():
                 current_mode = RescuerMode.WIFI
                 print('Change to WIFI Mode')
                 rx_ok_count = 0
+                rx_ok_time = current_time
         
 
 
@@ -183,7 +184,6 @@ def main():
             DUAL 模式
         =========================================="""
         while current_mode == RescuerMode.DUAL:
-            fetched_time = current_time
             
             lora_rx(lora)
             try:
@@ -210,7 +210,6 @@ def main():
             WIFI 模式
         =========================================="""
         while current_mode == RescuerMode.WIFI:
-            fetched_time = current_time
             lora_sleep(lora)
             
             try:
@@ -235,10 +234,11 @@ def main():
             """
                 超過五秒沒接收到新的，則視為接收失敗一次
             """
-            if (fetched_time - rx_ok_time).seconds >= 5:
+            if (current_time - rx_ok_time).seconds >= 7:
                 rx_fail_count += 1
                 print(f'rx_fail_count: {rx_fail_count}')
                 rx_ok_count = 0
+                rx_ok_time = current_time
 
 
 
