@@ -125,7 +125,7 @@ rx_fail_count = 0
 
 
 def main():
-    global current_mode, rx_ok_count, current_time
+    global current_mode, rx_ok_count, rx_fail_count, current_time
     stored_msg = object()
     rx_ok_time = current_time
     while True:
