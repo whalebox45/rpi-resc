@@ -5,8 +5,6 @@ import json
 
 from LoraRescuer import LoraRescuer
 
-import socket
-
 from MessageFormat import MessageFormat
 from SX127x.LoRa import *
 from SX127x.board_config import BOARD
@@ -22,6 +20,17 @@ args = argp.parse_args()
 
 WIFI_SOCKET_TEST = False
 if args.wifi: WIFI_SOCKET_TEST = True
+
+
+@unique
+class TargetMode(Enum):
+    LORA = 0
+    DUAL = 1
+    WIFI = 2
+
+
+current_mode = TargetMode.LORA
+if WIFI_SOCKET_TEST: current_mode = TargetMode.WIFI
 
 
 
@@ -48,11 +57,6 @@ def socket_new_setup():
 
 
 
-
-
-
-
-
 def lora_setup():
     """LoRa 模組設置"""
     BOARD.setup()
@@ -68,6 +72,8 @@ def lora_setup():
     lora.set_freq(433)
     print(lora)
     assert(lora.get_agc_auto_on() == 1)
+
+
 
 def lora_rx(lora:LoraRescuer):
     """將LoRa設為MODE.RXCONT"""
@@ -88,30 +94,38 @@ def lora_tx(lora:LoraRescuer,message:str):
 def lora_sleep(lora:LoraRescuer):
     lora.set_mode(MODE.SLEEP)
 
-@unique
-class TargetMode(Enum):
-    LORA = 0
-    DUAL = 1
-    WIFI = 2
-
-
-
-
-
-current_mode = TargetMode.LORA
-if WIFI_SOCKET_TEST: current_mode = TargetMode.WIFI
-
 
 current_time = datetime.datetime.now()
+
+def timer():
+    print("timer activated")
+    while True:
+        global current_time
+        current_time = datetime.datetime.now()
+        # print(datetime.datetime.time(current_time))
+        time.sleep(0.5)
+
+
+timer_thread = threading.Thread(target=timer)
+timer_thread.setDaemon(True)
+timer_thread.start()
+
+
 
 rx_ok_count = 0
 rx_fail_count = 0
 
 
+
 def main():
+    global current_mode, rx_ok_count, current_time
+    stored_msg = object()
+    rx_ok_time = current_time
     while True:
-        global current_mode, rx_ok_count, current_time
-        stored_msg = object()
+        
+        """==========================================
+            LORA 模式
+        =========================================="""
         while current_mode == TargetMode.LORA:
 
             fetched_time = current_time
@@ -134,6 +148,16 @@ def main():
                 rx_ok_count += 1
                 print(f'rx_ok_count: {rx_ok_count}')
             
+            """
+                如果在規定時間內都沒有收到LoRa訊息，就重設計數器數值
+            """
+
+
+            if (fetched_time - rx_ok_time).seconds >= 10:
+                print("reset rx_ok_count to 0")
+                rx_ok_count = 0
+
+
             '''
                 TODO 如果計數器數值數值足夠大就切換至 DUAL 模式
                 暫時設為 WIFI 模式
@@ -147,18 +171,20 @@ def main():
 
 
 
-
+        """==========================================
+            DUAL 模式
+        =========================================="""
         while current_mode == TargetMode.DUAL:
             pass
 
 
-
-
-
-
+        """==========================================
+            WIFI 模式
+        =========================================="""
         while current_mode == TargetMode.WIFI:
-            lora_sleep(lora)
             fetched_time = current_time
+            lora_sleep(lora)
+            
             sock_targ.write_udp(str(MessageFormat()))
             # sock_write_udp()
             try:
@@ -178,9 +204,19 @@ def main():
                 rx_ok_count += 1
                 print(f'rx_ok_count: {rx_ok_count}')
                 
+
+
             
-            if stored_msg == jrx:
-                pass
+            """
+                超過五秒沒接收到新的，則視為接收失敗一次
+            """
+            if (fetched_time - rx_ok_time).seconds >= 5:
+                rx_fail_count += 1
+                print(f'rx_fail_count: {rx_fail_count}')
+                rx_ok_count = 0
+
+
+
 
             """
                 TODO 測試用：WIFI模式10次成功時返回LORA
@@ -190,17 +226,19 @@ def main():
                 print('Change to LORA mode')
                 rx_ok_count = 0
 
+            """
+                連續接收失敗五次，返回DUAL模式
+                TODO 測試用：此處先返回至LORA模式
+            """
+            if rx_fail_count >= 5:
+                current_mode = TargetMode.LORA
+                print('Fail: Change to LORA mode')
+                rx_ok_count = 0
+                rx_fail_count = 0
+
 
 
 print('socket setup')
-# socket_setup()   
-# recv_udp_thread = threading.Thread(target=sock_recv_udp)
-# write_udp_thread = threading.Thread(target=sock_write_udp)
-# recv_udp_thread.setDaemon(True)
-# recv_udp_thread.start()
-
-
-
 socket_new_setup()
 
 recv_udp_thread = threading.Thread(target=sock_targ.recv_udp)
@@ -209,25 +247,7 @@ recv_udp_thread.start()
 
 lora_setup()
 
-
-
-def timer():
-    while True:
-        global current_time
-        current_time = datetime.datetime.now()
-        # print(datetime.datetime.time(current_time))
-        time.sleep(0.5)
-
-
-timer_thread = threading.Thread(target=timer)
-timer_thread.setDaemon(True)
-
-
-
 time.sleep(3)
-
-
-
 
 try:
     main()

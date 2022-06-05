@@ -1,7 +1,22 @@
+from curses import baudrate
 import uuid
 import socket
+import serial
+import pynmea2
 
 MESSAGE_SERIAL = 0
+
+def gps_signal():
+    while True:
+        port = "/dev/ttyAMA0"
+        ser = serial.Serial(port, baudrate=9600, timeout=0.5)
+        dataout = pynmea2.NMEAStreamReader()
+        newdata = ser.readline()
+
+        if newdata[0:6] == b"$GPRMC":
+            newmsg = pynmea2.parse(newdata.decode('ascii'))
+            lat = newmsg.latitude
+            lng = newmsg.longitude
 
 def get_cpuid():
     cpuserial = "000000000000000"
@@ -31,7 +46,7 @@ def get_serial():
     MESSAGE_SERIAL+= 1
     return MESSAGE_SERIAL
 
-class MessageFormat():
+class TargetMsgFormat():
     def __init__(self):
         self.cpuid = get_cpuid()
         self.macaddr = get_mac_address()
