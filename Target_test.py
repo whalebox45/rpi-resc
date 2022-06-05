@@ -156,6 +156,7 @@ def main():
             if (fetched_time - rx_ok_time).seconds >= 10:
                 print("reset rx_ok_count to 0")
                 rx_ok_count = 0
+                rx_ok_time = fetched_time
 
 
             '''
@@ -184,7 +185,7 @@ def main():
         while current_mode == TargetMode.WIFI:
             fetched_time = current_time
             lora_sleep(lora)
-            
+
             sock_targ.write_udp(str(MessageFormat()))
             # sock_write_udp()
             try:

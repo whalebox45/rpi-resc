@@ -161,9 +161,10 @@ def main():
                 如果在規定時間內都沒有收到LoRa訊息，就重設計數器數值
             """
             
-            if (fetched_time - rx_ok_time).seconds >= 10:
+            if (fetched_time - rx_ok_time).seconds >= 30:
                 print("reset rx_ok_count to 0")
                 rx_ok_count = 0
+                rx_ok_time = fetched_time
             
             '''
                 TODO 如果計數器數值數值足夠大就切換至 DUAL 模式
