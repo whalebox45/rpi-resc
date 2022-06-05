@@ -153,10 +153,10 @@ def main():
             """
 
 
-            if (fetched_time - rx_ok_time).seconds >= 10:
+            if (current_time - rx_ok_time).seconds >= 30:
                 print("reset rx_ok_count to 0")
                 rx_ok_count = 0
-                rx_ok_time = fetched_time
+                rx_ok_time = current_time
 
 
             '''
