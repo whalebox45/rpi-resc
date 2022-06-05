@@ -89,7 +89,7 @@ def lora_tx(lora:LoraRescuer,message:str):
     lora.set_dio_mapping([1,0,0,0,0,0])
     lora.set_mode(MODE.TX)
 
-    time.sleep(5)
+    time.sleep(6)
 
 def lora_sleep(lora:LoraRescuer):
     lora.set_mode(MODE.SLEEP)
@@ -153,7 +153,7 @@ def main():
             """
 
 
-            if (current_time - rx_ok_time).seconds >= 30:
+            if (current_time - rx_ok_time).seconds >= 33:
                 print("reset rx_ok_count to 0")
                 rx_ok_count = 0
                 rx_ok_time = current_time
