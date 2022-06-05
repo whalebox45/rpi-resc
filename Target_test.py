@@ -146,6 +146,7 @@ def main():
             if stored_msg != jrx:
                 stored_msg = jrx
                 rx_ok_count += 1
+                rx_ok_time = current_time
                 print(f'rx_ok_count: {rx_ok_count}')
             
             """
