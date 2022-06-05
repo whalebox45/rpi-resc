@@ -133,7 +133,6 @@ def main():
             LORA 模式
         =========================================="""
         while current_mode == RescuerMode.LORA:
-            fetched_time = current_time
             lora_rx(lora)
             '''
                 如果在規定時間內收到LoRa訊息，增加計數器數值，並且發送自身的LoRa訊息
@@ -161,10 +160,10 @@ def main():
                 如果在規定時間內都沒有收到LoRa訊息，就重設計數器數值
             """
             
-            if (fetched_time - rx_ok_time).seconds >= 30:
+            if (current_time - rx_ok_time).seconds >= 30:
                 print("reset rx_ok_count to 0")
                 rx_ok_count = 0
-                rx_ok_time = fetched_time
+                rx_ok_time = current_time
             
             '''
                 TODO 如果計數器數值數值足夠大就切換至 DUAL 模式
