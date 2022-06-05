@@ -215,7 +215,7 @@ def main():
             try:
                 rd = sock_resc.rx_data
                 jrx = json.loads(rd.replace("\'", "\""))
-                print(f"messageid: {jrx['MessageID']}")
+                
                 
             except json.JSONDecodeError as jse:
                 jrx = stored_msg
@@ -223,7 +223,7 @@ def main():
                 jrx = stored_msg
 
             if stored_msg != jrx:
-                
+                print(f"messageid: {jrx['MessageID']}")
                 stored_msg = jrx
                 rx_ok_count += 1
                 print(f'rx_ok_count: {rx_ok_count}')

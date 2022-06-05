@@ -190,17 +190,15 @@ def main():
             # sock_write_udp()
             try:
                 rd = sock_targ.rx_data
-                # rd = sock_message_recv.decode()
-                print(rd)
                 jrx = json.loads(rd.replace("\'","\""))
-                ser = jrx['MessageID']
-                print(f'messageid: {ser}')
+                
             except json.JSONDecodeError as jse:
                 jrx = stored_msg
             except Exception as e:
                 jrx = stored_msg
 
             if stored_msg != jrx:
+                print(f"messageid: {jrx['MessageID']}")
                 stored_msg = jrx
                 rx_ok_count += 1
                 print(f'rx_ok_count: {rx_ok_count}')
