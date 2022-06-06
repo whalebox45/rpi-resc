@@ -6,6 +6,9 @@ import json
 from LoraRescuer import LoraRescuer
 
 from MessageFormat import MessageFormat
+
+from TargetMsgFormat import TargetMsgFormat, gps_signal
+
 from SX127x.LoRa import *
 from SX127x.board_config import BOARD
 from SX127x.LoRaArgumentParser import LoRaArgumentParser
@@ -61,7 +64,7 @@ def lora_setup():
     """LoRa 模組設置"""
     BOARD.setup()
 
-    """ TODO 此處先共用LoraRescuer"""
+    """此處共用LoraRescuer"""
     global lora
     lora = LoraRescuer()
 
@@ -130,7 +133,9 @@ def main():
 
             lora_tx(lora,str(MessageFormat()))
             lora_rx(lora)
-
+            """
+            如果在規定時間內收到LoRa訊息，增加計數器數值，並且發送自身的LoRa訊息
+            """
             try:
                 rd = lora.rx_data
                 print(rd)
@@ -149,23 +154,20 @@ def main():
                 print(f'rx_ok_count: {rx_ok_count}')
             
             """
-                如果在規定時間內都沒有收到LoRa訊息，就重設計數器數值
+            如果在規定時間內都沒有收到LoRa訊息，就重設計數器數值
             """
-
-
             if (current_time - rx_ok_time).seconds >= 33:
                 print("reset rx_ok_count to 0")
                 rx_ok_count = 0
                 rx_ok_time = current_time
 
 
-            '''
-                TODO 如果計數器數值數值足夠大就切換至 DUAL 模式
-                暫時設為 WIFI 模式
-            '''
+            """
+            如果計數器數值數值足夠大就切換至 DUAL 模式    
+            """
             if rx_ok_count >= 5:
-                current_mode = TargetMode.WIFI
-                print('Change to WIFI Mode')
+                current_mode = TargetMode.DUAL
+                print('Change to DUAL Mode')
                 rx_ok_count = 0
                 rx_fail_count = 0
                 rx_ok_time = current_time
@@ -209,12 +211,21 @@ def main():
                 print(f'rx_ok_count: {rx_ok_count}')
                 rx_ok_time = current_time
 
+
+
+            """
+            超過20秒沒接收到新的，則視為接收失敗一次
+            """
             if (current_time - rx_ok_time).seconds >= 20:
                 rx_ok_count = 0
                 rx_fail_count += 1
                 print(f'rx_fail_count: {rx_fail_count}')
                 rx_ok_time = current_time
             
+
+            """
+            如果計數器數值數值足夠大就切換至 WIFI 模式    
+            """
             if rx_ok_count >= 5:
                 current_mode = TargetMode.WIFI
                 print('Change to WIFI Mode')
@@ -222,7 +233,10 @@ def main():
                 rx_fail_count = 0
                 rx_ok_time = current_time
                 break
-
+            
+            """
+            連續接收失敗五次，返回 LORA 模式    
+            """
             if rx_fail_count >= 5:
                 current_mode = TargetMode.LORA
                 print('Fail: Change to LORA mode')
@@ -263,7 +277,7 @@ def main():
 
             
             """
-                超過五秒沒接收到新的，則視為接收失敗一次
+            超過五秒沒接收到新的，則視為接收失敗一次
             """
             if (current_time - rx_ok_time).seconds >= 7:
                 rx_fail_count += 1
@@ -285,16 +299,19 @@ def main():
                 break
 
             """
-                連續接收失敗五次，返回DUAL模式
-                TODO 測試用：此處先返回至LORA模式
+            連續接收失敗五次，返回DUAL模式    
             """
             if rx_fail_count >= 5:
-                current_mode = TargetMode.LORA
-                print('Fail: Change to LORA mode')
+                current_mode = TargetMode.DUAL
+                print('Fail: Change to DUAL mode')
                 rx_ok_count = 0
                 rx_fail_count = 0
 
 
+print('GPS setup')
+gps_signal_thread = threading.Thread(target=gps_signal)
+gps_signal_thread.setDaemon(True)
+gps_signal_thread.start()
 
 print('socket setup')
 socket_new_setup()
