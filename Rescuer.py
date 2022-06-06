@@ -20,6 +20,7 @@ from SocketRescuer import SocketRescuer
 argp = argparse.ArgumentParser()
 argp.add_argument("-w","--wifi",action="store_true")
 argp.add_argument("-d","--dual",action="store_true")
+argp.add_argument("-t","--test",action="store_true")
 args = argp.parse_args()
 
 @unique
@@ -33,8 +34,8 @@ current_mode = RescuerMode.LORA
 if args.wifi: current_mode = RescuerMode.WIFI
 elif args.dual: current_mode = RescuerMode.DUAL
 
-
-
+if args.test: TESTMODE = True
+else: TESTMODE = False
 
 
 
@@ -108,7 +109,7 @@ def timer():
     while True:
         global current_time
         current_time = datetime.datetime.now()
-        # print(datetime.datetime.time(current_time))
+        print(datetime.datetime.time(current_time))
         time.sleep(0.5)
 
 
@@ -289,9 +290,9 @@ def main():
 
 
             """
-                TODO 測試用：WIFI模式10次成功時返回LORA
+            測試用：WIFI模式10次成功時返回LORA
             """
-            if rx_ok_count >= 10:
+            if rx_ok_count >= 10 and TESTMODE:
                 current_mode = RescuerMode.LORA
                 print('Change to LORA mode')
                 rx_ok_count = 0
