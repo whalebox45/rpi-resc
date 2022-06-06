@@ -5,7 +5,7 @@ import json
 
 from LoraRescuer import LoraRescuer
 
-from TargetMsgFormat import TargetMsgFormat, gps_signal
+from TargetMsgFormat import TargetMsgFormat
 
 from SX127x.LoRa import *
 from SX127x.board_config import BOARD
