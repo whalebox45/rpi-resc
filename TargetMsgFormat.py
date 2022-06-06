@@ -17,8 +17,6 @@ def gps_signal():
         dataout = pynmea2.NMEAStreamReader()
         newdata = ser.readline()
         global LATITUDE, LONGITUTE
-        LATITUDE = 'testlat'
-        LONGITUTE = 'testlng'
 
 
         if newdata[0:6] == b"$GPRMC":
