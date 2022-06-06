@@ -181,7 +181,8 @@ def main():
             
             fetch_msg = str(MessageFormat())
             lora_tx(lora,fetch_msg)
-            sock_targ.write_udp(fetch_msg)
+            for i in range(5):
+                sock_targ.write_udp(fetch_msg)
 
             lora_rx(lora)
             try:
