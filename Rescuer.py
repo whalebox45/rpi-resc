@@ -201,7 +201,7 @@ def main():
             
 
             if stored_msg != sjrx:
-                print(f"messageid: {jrx['MessageID']}")
+                print(f"messageid: {sjrx['MessageID']}")
                 stored_msg = sjrx
                 rx_ok_count += 1
                 rx_fail_count = 0

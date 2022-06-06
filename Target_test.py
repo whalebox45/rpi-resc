@@ -206,7 +206,7 @@ def main():
                 print(f'rx_ok_count: {rx_ok_count}')
                 rx_ok_time = current_time
 
-            if (current_time - rx_ok_time).seconds >= 15:
+            if (current_time - rx_ok_time).seconds >= 20:
                 rx_ok_count = 0
                 rx_fail_count += 1
                 print(f'rx_fail_count: {rx_fail_count}')
