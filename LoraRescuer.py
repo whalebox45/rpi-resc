@@ -25,7 +25,8 @@ class LoraRescuer(LoRa):
         
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
-        self.rx_data = ''.join([chr(c) for c in payload])
+        self.rx_data = ''.join([chr(c) for c in payload
+            if chr(c).isalnum() or chr(c) in " \t\n{}:\"\'"])
 
         print(f'RX: {self.rx_data}')
 
