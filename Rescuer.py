@@ -285,6 +285,7 @@ def main():
                 current_mode = RescuerMode.LORA
                 print('Change to LORA mode')
                 rx_ok_count = 0
+                rx_fail_count = 0
 
 
 
