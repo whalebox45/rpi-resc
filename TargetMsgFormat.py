@@ -1,4 +1,4 @@
-from curses import baudrate
+import json
 import uuid
 import socket
 import serial
@@ -46,7 +46,14 @@ def get_serial():
     MESSAGE_SERIAL+= 1
     return MESSAGE_SERIAL
 
-print('targetmsgformat test')
+try:
+    pf = open('target_info.json','r')
+except:
+    print('Personal Data file target_info.json not found: leave blank')
+    pf = []
+finally:
+    pdata = json.load(pf)
+
 
 class TargetMsgFormat():
     def __init__(self):
@@ -54,13 +61,15 @@ class TargetMsgFormat():
         self.macaddr = get_mac_address()
         self.hostname = get_hostname()
         self.serial = get_serial()
+        self.pdata = pdata
     
     def __str__(self):
         data_dict = dict({
             "MessageID": self.serial,
             "CPUSerial": self.cpuid,
             "MACAddr": self.macaddr,
-            "Hostname": self.hostname
+            "Hostname": self.hostname,
+            "PersonalData": pdata
         })
         return str(data_dict)
 

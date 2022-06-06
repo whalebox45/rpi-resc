@@ -5,8 +5,6 @@ import json
 
 from LoraRescuer import LoraRescuer
 
-from MessageFormat import MessageFormat
-
 from TargetMsgFormat import TargetMsgFormat, gps_signal
 
 from SX127x.LoRa import *
@@ -131,7 +129,7 @@ def main():
         =========================================="""
         while current_mode == TargetMode.LORA:
 
-            lora_tx(lora,str(MessageFormat()))
+            lora_tx(lora,str(TargetMsgFormat()))
             lora_rx(lora)
             """
             如果在規定時間內收到LoRa訊息，增加計數器數值，並且發送自身的LoRa訊息
@@ -182,7 +180,7 @@ def main():
         =========================================="""
         while current_mode == TargetMode.DUAL:
             
-            fetch_msg = str(MessageFormat())
+            fetch_msg = str(TargetMsgFormat())
             lora_tx(lora,fetch_msg)
             for i in range(5):
                 sock_targ.write_udp(fetch_msg)
@@ -255,7 +253,7 @@ def main():
         while current_mode == TargetMode.WIFI:
             lora_sleep(lora)
 
-            sock_targ.write_udp(str(MessageFormat()))
+            sock_targ.write_udp(str(TargetMsgFormat()))
             # sock_write_udp()
             try:
                 rd = sock_targ.rx_data
