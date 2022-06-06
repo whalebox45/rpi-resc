@@ -214,8 +214,9 @@ def main():
                 print(f'rx_fail_count: {rx_fail_count}')
                 rx_ok_time = current_time
 
-            lora_tx(lora,str(MessageFormat()))
-            sock_resc.write_udp(str(MessageFormat()))
+            fetch_msg = str(MessageFormat())
+            lora_tx(lora,fetch_msg)
+            sock_resc.write_udp(fetch_msg)
 
             if rx_ok_count >= 5:
                 current_mode = RescuerMode.WIFI

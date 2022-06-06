@@ -179,8 +179,9 @@ def main():
         =========================================="""
         while current_mode == TargetMode.DUAL:
             
-            lora_tx(lora,str(MessageFormat()))
-            sock_targ.write_udp(str(MessageFormat()))
+            fetch_msg = str(MessageFormat())
+            lora_tx(lora,fetch_msg)
+            sock_targ.write_udp(fetch_msg)
 
             lora_rx(lora)
             try:
