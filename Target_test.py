@@ -16,10 +16,9 @@ from SocketTarget import SocketTarget
 
 argp = argparse.ArgumentParser()
 argp.add_argument("-w","--wifi",action="store_true")
+argp.add_argument("-d","--dual",action="store_true")
 args = argp.parse_args()
 
-WIFI_SOCKET_TEST = False
-if args.wifi: WIFI_SOCKET_TEST = True
 
 
 @unique
@@ -30,7 +29,8 @@ class TargetMode(Enum):
 
 
 current_mode = TargetMode.LORA
-if WIFI_SOCKET_TEST: current_mode = TargetMode.WIFI
+if args.wifi: current_mode = TargetMode.WIFI
+elif args.dual: current_mode = TargetMode.DUAL
 
 
 
@@ -167,6 +167,7 @@ def main():
                 current_mode = TargetMode.WIFI
                 print('Change to WIFI Mode')
                 rx_ok_count = 0
+                rx_fail_count = 0
                 rx_ok_time = current_time
 
 
@@ -177,7 +178,57 @@ def main():
             DUAL 模式
         =========================================="""
         while current_mode == TargetMode.DUAL:
-            pass
+            
+            lora_tx(lora,str(MessageFormat()))
+            sock_targ.write_udp(str(MessageFormat()))
+
+            lora_rx(lora)
+            try:
+                lrd = lora.rx_data
+                ljrx = json.loads(lrd.replace("\'","\""))
+                print(f"messageid: {ljrx['MessageID']}")
+            except:
+                ljrx = stored_msg
+            
+            try:
+                srd = sock_targ.rx_data
+                sjrx = json.loads(srd.replace("\'","\""))
+                print(f"messageid: {sjrx['MessageID']}")
+            except:
+                sjrx = stored_msg
+            
+
+            if stored_msg != sjrx:
+                print(f"messageid: {jrx['MessageID']}")
+                stored_msg = sjrx
+                rx_ok_count += 1
+                rx_fail_count = 0
+                print(f'rx_ok_count: {rx_ok_count}')
+                rx_ok_time = current_time
+
+            if (current_time - rx_ok_time).seconds >= 15:
+                rx_ok_count = 0
+                rx_fail_count += 1
+                print(f'rx_fail_count: {rx_fail_count}')
+                rx_ok_time = current_time
+            
+            if rx_ok_count >= 5:
+                current_mode = TargetMode.WIFI
+                print('Change to WIFI Mode')
+                rx_ok_count = 0
+                rx_fail_count = 0
+                rx_ok_time = current_time
+
+            if rx_fail_count >= 5:
+                current_mode = TargetMode.LORA
+                print('Fail: Change to LORA mode')
+                rx_ok_count = 0
+                rx_fail_count = 0
+                rx_ok_time = current_time
+
+
+
+
 
 
         """==========================================
@@ -201,6 +252,7 @@ def main():
                 print(f"messageid: {jrx['MessageID']}")
                 stored_msg = jrx
                 rx_ok_count += 1
+                rx_fail_count = 0
                 print(f'rx_ok_count: {rx_ok_count}')
                 
 
@@ -225,6 +277,7 @@ def main():
                 current_mode = TargetMode.LORA
                 print('Change to LORA mode')
                 rx_ok_count = 0
+                rx_fail_count = 0
 
             """
                 連續接收失敗五次，返回DUAL模式

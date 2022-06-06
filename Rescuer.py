@@ -19,10 +19,8 @@ from SocketRescuer import SocketRescuer
 
 argp = argparse.ArgumentParser()
 argp.add_argument("-w","--wifi",action="store_true")
+argp.add_argument("-d","--dual",action="store_true")
 args = argp.parse_args()
-
-WIFI_SOCKET_TEST = False
-if args.wifi: WIFI_SOCKET_TEST = True
 
 @unique
 class RescuerMode(Enum):
@@ -32,7 +30,8 @@ class RescuerMode(Enum):
 
 
 current_mode = RescuerMode.LORA
-if WIFI_SOCKET_TEST: current_mode = RescuerMode.WIFI
+if args.wifi: current_mode = RescuerMode.WIFI
+elif args.dual: current_mode = RescuerMode.DUAL
 
 
 
@@ -201,6 +200,38 @@ def main():
                 sjrx = stored_msg
             
 
+            if stored_msg != sjrx:
+                print(f"messageid: {jrx['MessageID']}")
+                stored_msg = sjrx
+                rx_ok_count += 1
+                rx_fail_count = 0
+                print(f'rx_ok_count: {rx_ok_count}')
+                rx_ok_time = current_time
+
+            if (current_time - rx_ok_time).seconds >= 15:
+                rx_ok_count = 0
+                rx_fail_count += 1
+                print(f'rx_fail_count: {rx_fail_count}')
+                rx_ok_time = current_time
+
+            lora_tx(lora,str(MessageFormat()))
+            sock_resc.write_udp(str(MessageFormat()))
+
+            if rx_ok_count >= 5:
+                current_mode = RescuerMode.WIFI
+                print('Change to WIFI Mode')
+                rx_ok_count = 0
+                rx_fail_count = 0
+                rx_ok_time = current_time
+
+            if rx_fail_count >= 5:
+                current_mode = RescuerMode.LORA
+                print('Fail: Change to LORA mode')
+                rx_ok_count = 0
+                rx_fail_count = 0
+                rx_ok_time = current_time
+
+
 
 
 
@@ -226,7 +257,9 @@ def main():
                 print(f"messageid: {jrx['MessageID']}")
                 stored_msg = jrx
                 rx_ok_count += 1
+                rx_fail_count = 0
                 print(f'rx_ok_count: {rx_ok_count}')
+                rx_ok_time = current_time
                 sock_resc.write_udp(str(MessageFormat()))
 
 
@@ -237,7 +270,7 @@ def main():
             if (current_time - rx_ok_time).seconds >= 7:
                 rx_fail_count += 1
                 print(f'rx_fail_count: {rx_fail_count}')
-                rx_ok_count = 0
+                # rx_ok_count = 0
                 rx_ok_time = current_time
 
 
