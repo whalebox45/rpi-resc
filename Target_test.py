@@ -18,6 +18,7 @@ from SocketTarget import SocketTarget
 argp = argparse.ArgumentParser()
 argp.add_argument("-w","--wifi",action="store_true")
 argp.add_argument("-d","--dual",action="store_true")
+argp.add_argument("-t","--test",action="store_true")
 args = argp.parse_args()
 
 
@@ -33,7 +34,8 @@ current_mode = TargetMode.LORA
 if args.wifi: current_mode = TargetMode.WIFI
 elif args.dual: current_mode = TargetMode.DUAL
 
-
+if args.test: TESTMODE = True
+else: TESTMODE = False
 
 def socket_new_setup():
     confp = configparser.ConfigParser()
@@ -287,9 +289,9 @@ def main():
 
 
             """
-                TODO 測試用：WIFI模式10次成功時返回LORA
+            測試用：WIFI模式10次成功時返回LORA
             """
-            if rx_ok_count >= 10:
+            if rx_ok_count >= 10 and TESTMODE:
                 current_mode = TargetMode.LORA
                 print('Change to LORA mode')
                 rx_ok_count = 0
