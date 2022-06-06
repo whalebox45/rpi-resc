@@ -56,20 +56,30 @@ finally:
 
 
 class TargetMsgFormat():
-    def __init__(self):
+    def __init__(self,getPersonalData=False):
+        self.getPersonalData = getPersonalData
         self.cpuid = get_cpuid()
         self.macaddr = get_mac_address()
         self.hostname = get_hostname()
         self.serial = get_serial()
-        self.pdata = pdata
+        if getPersonalData:
+            self.pdata = pdata
     
     def __str__(self):
-        data_dict = dict({
-            "MessageID": self.serial,
-            "CPUSerial": self.cpuid,
-            "MACAddr": self.macaddr,
-            "Hostname": self.hostname,
-            "PersonalData": pdata
-        })
+        if self.getPersonalData:
+            data_dict = dict({
+                "MessageID": self.serial,
+                "CPUSerial": self.cpuid,
+                "MACAddr": self.macaddr,
+                "Hostname": self.hostname,
+                "PersonalData": pdata
+            })
+        else:
+            data_dict = dict({
+                "MessageID": self.serial,
+                "CPUSerial": self.cpuid,
+                "MACAddr": self.macaddr,
+                "Hostname": self.hostname,
+            })
         return str(data_dict)
 

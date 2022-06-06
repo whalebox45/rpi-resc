@@ -253,7 +253,7 @@ def main():
         while current_mode == TargetMode.WIFI:
             lora_sleep(lora)
 
-            sock_targ.write_udp(str(TargetMsgFormat()))
+            sock_targ.write_udp(str(TargetMsgFormat(getPersonalData=True)))
             # sock_write_udp()
             try:
                 rd = sock_targ.rx_data
