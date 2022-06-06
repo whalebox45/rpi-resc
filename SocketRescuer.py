@@ -16,7 +16,7 @@ class SocketRescuer:
         while True:
             msg, addr = self.socket.recvfrom(1024)
             self.rx_data = msg.decode()
-            print("Socket RX:%s" % self.rx_data)
+            print("Socket RX:%s\n" % self.rx_data)
             if addr not in self.sock_client_list:
                 self.sock_client_list.append(addr)
             
@@ -26,6 +26,6 @@ class SocketRescuer:
         message_send = str(self.tx_data)
         for addr in self.sock_client_list:
             self.socket.sendto(message_send.encode(), addr)
-        print("Socket TX:%s"%message_send)
+        print("Socket TX:%s\n"%message_send)
         
         time.sleep(1)

@@ -25,10 +25,12 @@ class LoraRescuer(LoRa):
         
         self.clear_irq_flags(RxDone=1)
         payload = self.read_payload(nocheck=True)
-        self.rx_data = ''.join([chr(c) for c in payload])
+        self.rx_data = ''.join([chr(c) for c in payload
+            if c in range(32,127) or chr(c) in " \t\n"])
 
-        print(f'RX: {self.rx_data}')
 
+        print(f'RX: {self.rx_data}\n')
+    
         
 
         # self.set_mode(MODE.STDBY)
@@ -40,7 +42,7 @@ class LoraRescuer(LoRa):
     def on_tx_done(self):
         self.clear_irq_flags(TxDone=1)
 
-        print(f'TX: {self.tx_data}')
+        print(f'TX: {self.tx_data}\n')
         self.write_payload([ord(c) for c in self.tx_data])
         self.set_mode(MODE.TX)
         time.sleep(1)
