@@ -46,6 +46,8 @@ def get_serial():
     MESSAGE_SERIAL+= 1
     return MESSAGE_SERIAL
 
+print('targetmsgformat test')
+
 class TargetMsgFormat():
     def __init__(self):
         self.cpuid = get_cpuid()

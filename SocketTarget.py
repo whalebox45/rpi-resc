@@ -15,14 +15,14 @@ class SocketTarget:
         while True:
             msg, addr = self.socket.recvfrom(1024)
             self.rx_data = msg.decode()
-            print("Socket RX:%s" % self.rx_data)
+            print("Socket RX:%s\n" % self.rx_data)
     
     def write_udp(self,message):
         self.tx_data = message
         message_send = str(self.tx_data)
         
         self.socket.sendto(message_send.encode(), self.addr)
-        print("Socket TX:%s" % message_send)
+        print("Socket TX:%s\n" % message_send)
         
         time.sleep(1)
         

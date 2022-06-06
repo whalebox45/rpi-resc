@@ -29,7 +29,7 @@ class LoraRescuer(LoRa):
             if c in range(32,127) or chr(c) in " \t\n"])
 
 
-        print(f'RX: {self.rx_data}')
+        print(f'RX: {self.rx_data}\n')
     
         
 
@@ -42,7 +42,7 @@ class LoraRescuer(LoRa):
     def on_tx_done(self):
         self.clear_irq_flags(TxDone=1)
 
-        print(f'TX: {self.tx_data}')
+        print(f'TX: {self.tx_data}\n')
         self.write_payload([ord(c) for c in self.tx_data])
         self.set_mode(MODE.TX)
         time.sleep(1)
