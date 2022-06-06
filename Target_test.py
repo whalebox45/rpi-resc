@@ -5,7 +5,7 @@ import json
 
 from LoraRescuer import LoraRescuer
 
-from TargetMsgFormat import TargetMsgFormat
+from TargetMsgFormat import TargetMsgFormat, gps_signal
 
 from SX127x.LoRa import *
 from SX127x.board_config import BOARD
@@ -307,10 +307,9 @@ def main():
 
 
 
-TargetMsgFormat.gps_signal = staticmethod(TargetMsgFormat.gps_signal)
 
 print('GPS setup')
-gps_signal_thread = threading.Thread(target=TargetMsgFormat.gps_signal)
+gps_signal_thread = threading.Thread(target=gps_signal)
 gps_signal_thread.setDaemon(True)
 gps_signal_thread.start()
 

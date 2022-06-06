@@ -6,8 +6,25 @@ import pynmea2
 
 MESSAGE_SERIAL = 0
 
+LATITUDE = 0
+LONGITUTE = 0
+
+def gps_signal():
+    while True:
+        port = "/dev/ttyAMA0"
+        ser = serial.Serial(port, baudrate=9600, timeout=0.5)
+        dataout = pynmea2.NMEAStreamReader()
+        newdata = ser.readline()
+
+        LATITUDE = 'testlat'
+        LONGITUTE = 'testlng'
 
 
+        if newdata[0:6] == b"$GPRMC":
+            newmsg = pynmea2.parse(newdata.decode('ascii'))
+            LATITUDE = newmsg.latitude
+            LONGITUTE = newmsg.longitude
+            
 
 
 
@@ -55,16 +72,14 @@ class TargetMsgFormat():
         self.macaddr = get_mac_address()
         self.hostname = get_hostname()
         self.serial = get_serial()
-        self.lat = 0
-        self.lng = 0
         if getPersonalData:
             self.pdata = pdata
     
     def __str__(self):
         if self.getPersonalData:
             data_dict = dict({
-                "Latitude": self.lat,
-                "Longitude": self.lng,
+                "Latitude": LATITUDE,
+                "Longitude": LONGITUTE,
                 "MessageID": self.serial,
                 "CPUSerial": self.cpuid,
                 "MACAddr": self.macaddr,
@@ -73,8 +88,8 @@ class TargetMsgFormat():
             })
         else:
             data_dict = dict({
-                "Latitude": self.lat,
-                "Longitude": self.lng,
+                "Latitude": LATITUDE,
+                "Longitude": LONGITUTE,
                 "MessageID": self.serial,
                 "CPUSerial": self.cpuid,
                 "MACAddr": self.macaddr,
@@ -82,16 +97,4 @@ class TargetMsgFormat():
             })
         return str(data_dict)
 
-    def gps_signal(self):
-        while True:
-            port = "/dev/ttyAMA0"
-            ser = serial.Serial(port, baudrate=9600, timeout=0.5)
-            dataout = pynmea2.NMEAStreamReader()
-            newdata = ser.readline()
-
-            if newdata[0:6] == b"$GPRMC":
-                newmsg = pynmea2.parse(newdata.decode('ascii'))
-                self.lat = newmsg.latitude
-                self.lng = newmsg.longitude
-                self.lat = 'testlat'
-                self.lng = 'testlng'
+    
