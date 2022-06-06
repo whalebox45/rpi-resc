@@ -6,6 +6,7 @@ import pynmea2
 
 MESSAGE_SERIAL = 0
 
+
 LATITUDE = 0
 LONGITUTE = 0
 
@@ -15,7 +16,7 @@ def gps_signal():
         ser = serial.Serial(port, baudrate=9600, timeout=0.5)
         dataout = pynmea2.NMEAStreamReader()
         newdata = ser.readline()
-
+        global LATITUDE, LONGITUTE
         LATITUDE = 'testlat'
         LONGITUTE = 'testlng'
 
