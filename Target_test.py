@@ -169,6 +169,7 @@ def main():
                 rx_ok_count = 0
                 rx_fail_count = 0
                 rx_ok_time = current_time
+                break
 
 
 
@@ -220,6 +221,7 @@ def main():
                 rx_ok_count = 0
                 rx_fail_count = 0
                 rx_ok_time = current_time
+                break
 
             if rx_fail_count >= 5:
                 current_mode = TargetMode.LORA
@@ -280,6 +282,7 @@ def main():
                 print('Change to LORA mode')
                 rx_ok_count = 0
                 rx_fail_count = 0
+                break
 
             """
                 連續接收失敗五次，返回DUAL模式

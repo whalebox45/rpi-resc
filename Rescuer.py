@@ -173,6 +173,7 @@ def main():
                 print('Change to WIFI Mode')
                 rx_ok_count = 0
                 rx_ok_time = current_time
+                break
         
 
 
@@ -225,6 +226,7 @@ def main():
                 rx_ok_count = 0
                 rx_fail_count = 0
                 rx_ok_time = current_time
+                break
 
             if rx_fail_count >= 5:
                 current_mode = RescuerMode.LORA
@@ -286,6 +288,7 @@ def main():
                 print('Change to LORA mode')
                 rx_ok_count = 0
                 rx_fail_count = 0
+                break
 
 
 
