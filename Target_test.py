@@ -306,8 +306,11 @@ def main():
                 rx_fail_count = 0
 
 
+
+TargetMsgFormat.gps_signal = staticmethod(TargetMsgFormat.gps_signal)
+
 print('GPS setup')
-gps_signal_thread = threading.Thread(target=gps_signal)
+gps_signal_thread = threading.Thread(target=TargetMsgFormat.gps_signal)
 gps_signal_thread.setDaemon(True)
 gps_signal_thread.start()
 
