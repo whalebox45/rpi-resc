@@ -15,14 +15,15 @@ def gps_signal():
         port = "/dev/ttyAMA0"
         ser = serial.Serial(port, baudrate=9600, timeout=0.5)
         dataout = pynmea2.NMEAStreamReader()
-        newdata = ser.readline()
         global LATITUDE, LONGITUTE
-
-
-        if newdata[0:6] == b"$GPRMC":
-            newmsg = pynmea2.parse(newdata.decode('ascii'))
-            LATITUDE = newmsg.latitude
-            LONGITUTE = newmsg.longitude
+        try:
+            newdata = ser.readline()
+            if newdata[0:6] == b"$GPRMC":
+                newmsg = pynmea2.parse(newdata.decode('ascii'))
+                LATITUDE = newmsg.latitude
+                LONGITUTE = newmsg.longitude
+        except SerialException:
+            pass
             
 
 
