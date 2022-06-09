@@ -24,7 +24,8 @@ def gps_signal():
                 LONGITUTE = newmsg.longitude
         except SerialException:
             pass
-            
+        except Exception:
+            pass
 
 
 
