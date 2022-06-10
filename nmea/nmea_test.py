@@ -16,5 +16,8 @@ while True:
             lng = newmsg.longitude
             gps = "Lat: " + f'{lat}' + "Lng: " + f'{lng}'
             print(gps)
+    except KeyboardInterrupt:
+        exit(0)
     except:
         pass
+        
