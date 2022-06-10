@@ -14,7 +14,7 @@ while True:
             newmsg = pynmea2.parse(newdata.decode('ascii'))
             lat = newmsg.latitude
             lng = newmsg.longitude
-            gps = "Lat: " + f'{lat}' + "Lng: " + f'{lng}'
+            gps = "Lat: " + f'{lat:.7f}' + "Lng: " + f'{lng:.7f}'
             print(gps)
     except KeyboardInterrupt:
         exit(0)
