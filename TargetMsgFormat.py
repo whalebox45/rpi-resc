@@ -21,8 +21,11 @@ def gps_signal():
             newdata = ser.readline()
             if newdata[0:6] == b"$GPRMC":
                 newmsg = pynmea2.parse(newdata.decode('ascii'))
+                LATITUDE = newmsg.latitude
+                LONGITUTE = newmsg.longitude
                 stored_lat = newmsg.latitude
                 stored_lng = newmsg.longitude
+
         except Exception:
             LATITUDE = stored_lat
             LONGITUTE = stored_lng
