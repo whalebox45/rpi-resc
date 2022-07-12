@@ -1,0 +1,18 @@
+{
+    "FirstName": "John",
+    "LastName": "Doe",
+    "Sex": "M",
+    "BirthDate": "1991/01/01",
+    "Address": "12 Abc Road, Def City, Ghijk",
+    "Allergy":[
+        {
+            "Food": "Peanut"
+        },
+        {
+            "Drug": "Penicillin"
+        }
+    ],
+    "MedicalHistory":[
+        "High Blood Pressure"
+    ]
+}
